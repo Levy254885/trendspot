@@ -1,0 +1,68 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn()
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function isEditorOrAdmin() {
+      return isSignedIn()
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'editor'];
+    }
+
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    match /articles/{articleId} {
+      allow read: if resource.data.status == 'published'
+        || isEditorOrAdmin();
+      allow create, update, delete: if isEditorOrAdmin();
+    }
+
+    match /categories/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /authors/{id} {
+      allow read: if true;
+      allow write: if isEditorOrAdmin();
+    }
+
+    match /tags/{id} {
+      allow read: if true;
+      allow write: if isEditorOrAdmin();
+    }
+
+    match /newsletterSubscribers/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['email', 'subscribedAt', 'active', 'source'])
+        && request.resource.data.email is string
+        && request.resource.data.active == true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /contactMessages/{id} {
+      allow create: if request.resource.data.keys().hasAll(['name', 'email', 'subject', 'message', 'createdAt', 'read'])
+        && request.resource.data.read == false;
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /siteSettings/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /articleViews/{id} {
+      allow create: if true;
+      allow read: if isEditorOrAdmin();
+      allow update, delete: if isAdmin();
+    }
+  }
+}
