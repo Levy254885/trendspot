@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Article } from "@/types";
 import { ArticleImage } from "@/components/shared/ArticleImage";
 
-function Col({
+function MobileSection({
   label,
   stories,
   red,
@@ -12,7 +12,58 @@ function Col({
   red?: boolean;
 }) {
   if (!stories.length) return null;
+  return (
+    <div className="mb-10 border-b border-border pb-10 last:mb-0 last:border-0 last:pb-0">
+      <span
+        className={`mb-5 block border-b-2 pb-3 text-[11px] font-extrabold uppercase tracking-[0.18em] ${
+          red ? "border-red text-red" : "border-black text-mid"
+        }`}
+      >
+        {label}
+      </span>
+      <div className="flex flex-col gap-7">
+        {stories.map((story, i) => (
+          <Link key={story.id} href={`/article/${story.slug}`} className="group block">
+            {i === 0 && (
+              <ArticleImage
+                src={story.featuredImage.url}
+                alt={story.featuredImage.alt}
+                aspect="16/9"
+                className="mb-3"
+                sizes="100vw"
+              />
+            )}
+            <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-red">
+              {story.tags[0] || story.category}
+            </div>
+            <div className="mb-1.5 font-[family-name:var(--font-bask)] text-[19px] font-bold leading-[1.25] text-black">
+              {story.title}
+            </div>
+            {i === 0 && (
+              <p className="mb-2 line-clamp-2 font-[family-name:var(--font-serif)] text-[15px] leading-[1.55] text-gray">
+                {story.excerpt}
+              </p>
+            )}
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-pale">
+              By {story.author}
+            </div>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
 
+function DesktopCol({
+  label,
+  stories,
+  red,
+}: {
+  label: string;
+  stories: Article[];
+  red?: boolean;
+}) {
+  if (!stories.length) return null;
   return (
     <div className="min-w-0">
       <span
@@ -36,7 +87,7 @@ function Col({
               alt={story.featuredImage.alt}
               aspect="3/2"
               className="mb-2.5"
-              sizes="(max-width: 768px) 100vw, 30vw"
+              sizes="(max-width: 1024px) 50vw, 30vw"
             />
           )}
           <div className="mb-1 text-[9.5px] font-bold uppercase tracking-[0.12em] text-red">
@@ -69,16 +120,22 @@ export function EditorialGrid({
   celebrities: Article[];
 }) {
   return (
-    <section className="mb-8 border-b border-border pb-8">
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-0">
-        <div className="md:pr-6">
-          <Col label="Fashion" stories={fashion} red />
+    <section className="mb-10 border-b border-border pb-10 md:mb-8 md:pb-8">
+      <div className="md:hidden">
+        <MobileSection label="Fashion" stories={fashion} red />
+        <MobileSection label="Music" stories={music} />
+        <MobileSection label="Celebrities" stories={celebrities} />
+      </div>
+
+      <div className="hidden gap-8 md:grid md:grid-cols-2 lg:grid-cols-3 lg:gap-0">
+        <div className="lg:pr-6">
+          <DesktopCol label="Fashion" stories={fashion} red />
         </div>
-        <div className="md:border-x md:border-border2 md:px-6">
-          <Col label="Music" stories={music} />
+        <div className="lg:border-x lg:border-border2 lg:px-6">
+          <DesktopCol label="Music" stories={music} />
         </div>
-        <div className="md:pl-6">
-          <Col label="Celebrities" stories={celebrities} />
+        <div className="md:col-span-2 lg:col-span-1 lg:pl-6">
+          <DesktopCol label="Celebrities" stories={celebrities} />
         </div>
       </div>
     </section>
