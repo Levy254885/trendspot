@@ -11,11 +11,6 @@ import {
 } from "@/data/seed";
 import type { Article, Category } from "@/types";
 
-/**
- * Article data layer.
- * Currently backed by seed data. Replace implementations with Firestore
- * queries when Firebase credentials are configured.
- */
 export async function fetchPublishedArticles(): Promise<Article[]> {
   return getPublishedArticles();
 }
@@ -78,7 +73,7 @@ export async function fetchHomeData() {
   const [featured, latest, mostRead, breaking, all] = await Promise.all([
     fetchFeaturedArticle(),
     fetchLatest(8),
-    fetchMostRead(3),
+    fetchMostRead(5),
     fetchBreakingArticles(),
     fetchPublishedArticles(),
   ]);
@@ -101,7 +96,7 @@ export async function fetchHomeData() {
     fashion,
     music,
     celebrities,
-    latest: latest.slice(0, 4),
+    latest: latest.slice(0, 5),
     mostRead,
     breaking: breaking.slice(0, 3),
     awards,
