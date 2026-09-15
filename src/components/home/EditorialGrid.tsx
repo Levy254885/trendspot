@@ -1,6 +1,5 @@
-import Link from "next/link";
 import type { Article } from "@/types";
-import { ArticleImage } from "@/components/shared/ArticleImage";
+import { StoryCard } from "@/components/shared/StoryCard";
 
 function Col({
   label,
@@ -11,9 +10,8 @@ function Col({
   stories: Article[];
   red?: boolean;
 }) {
-  const lead = stories[0];
-  const rest = stories.slice(1);
-  if (!lead) return null;
+  if (!stories.length) return null;
+  const [lead, ...rest] = stories;
 
   return (
     <div className="min-w-0">
@@ -24,47 +22,17 @@ function Col({
       >
         {label}
       </span>
-      <Link
-        href={`/article/${lead.slug}`}
-        className="group mb-8 block border-b border-border2 pb-8"
-      >
-        <ArticleImage
-          src={lead.featuredImage.url}
-          alt={lead.featuredImage.alt}
-          aspect="3/2"
-          className="mb-4"
-          sizes="(max-width: 768px) 100vw, 30vw"
-        />
-        <div className="mb-2 text-[9.5px] font-bold uppercase tracking-[0.12em] text-red">
-          {lead.tags[0] || lead.category}
-        </div>
-        <div className="mb-2 font-[family-name:var(--font-bask)] text-[16px] font-bold leading-[1.35] text-black group-hover:text-red">
-          {lead.title}
-        </div>
-        <div className="mb-2 line-clamp-2 font-[family-name:var(--font-serif)] text-[13px] leading-[1.55] text-gray">
-          {lead.excerpt}
-        </div>
-        <div className="text-[10px] font-semibold uppercase tracking-[0.06em] text-pale">
-          By {lead.author}
-        </div>
-      </Link>
-      {rest.map((story) => (
-        <Link
-          key={story.id}
-          href={`/article/${story.slug}`}
-          className="group block py-4"
-        >
-          <div className="mb-1.5 text-[9.5px] font-bold uppercase tracking-[0.12em] text-red">
-            {story.tags[0] || story.category}
-          </div>
-          <div className="mb-1.5 font-[family-name:var(--font-bask)] text-[15px] font-bold leading-[1.35] text-black group-hover:text-red">
-            {story.title}
-          </div>
-          <div className="text-[10px] font-semibold uppercase tracking-[0.06em] text-pale">
-            By {story.author}
-          </div>
-        </Link>
-      ))}
+      <div className="flex flex-col gap-5">
+        <StoryCard article={lead} variant="feature" showExcerpt />
+        {rest.map((story) => (
+          <StoryCard
+            key={story.id}
+            article={story}
+            variant="compact"
+            showImage={false}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -80,16 +48,10 @@ export function EditorialGrid({
 }) {
   return (
     <section className="mb-14 border-b border-border pb-14">
-      <div className="grid grid-cols-1 gap-14 md:grid-cols-3 md:gap-0">
-        <div className="md:pr-10">
-          <Col label="Fashion" stories={fashion} red />
-        </div>
-        <div className="md:border-x md:border-border2 md:px-10">
-          <Col label="Music" stories={music} />
-        </div>
-        <div className="md:pl-10">
-          <Col label="Celebrities" stories={celebrities} />
-        </div>
+      <div className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
+        <Col label="Fashion" stories={fashion} red />
+        <Col label="Music" stories={music} />
+        <Col label="Celebrities" stories={celebrities} />
       </div>
     </section>
   );
