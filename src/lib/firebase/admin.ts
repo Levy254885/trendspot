@@ -4,13 +4,11 @@
  * Requires FIREBASE_ADMIN_* env vars. Falls back gracefully when unset.
  */
 
-import type { App } from "firebase-admin/app";
-import type { Auth } from "firebase-admin/auth";
-import type { Firestore } from "firebase-admin/firestore";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-let adminApp: App | null = null;
-let adminAuth: Auth | null = null;
-let adminDb: Firestore | null = null;
+let adminApp: any = null;
+let adminAuth: any = null;
+let adminDb: any = null;
 
 function hasAdminCreds(): boolean {
   return Boolean(
@@ -20,47 +18,60 @@ function hasAdminCreds(): boolean {
   );
 }
 
-export async function getAdminApp(): Promise<App | null> {
+export async function getAdminApp(): Promise<any | null> {
   if (!hasAdminCreds()) return null;
   if (adminApp) return adminApp;
 
-  const { initializeApp, getApps, cert } = await import("firebase-admin/app");
-  if (getApps().length) {
-    adminApp = getApps()[0]!;
+  try {
+    const adminAppMod = await import("firebase-admin/app");
+    const { initializeApp, getApps, cert } = adminAppMod;
+    if (getApps().length) {
+      adminApp = getApps()[0]!;
+      return adminApp;
+    }
+
+    const privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY!.replace(
+      /\\n/g,
+      "\n"
+    );
+
+    adminApp = initializeApp({
+      credential: cert({
+        projectId: process.env.FIREBASE_ADMIN_PROJECT_ID!,
+        clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL!,
+        privateKey,
+      }),
+    });
     return adminApp;
+  } catch {
+    return null;
   }
-
-  const privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY!.replace(
-    /\\n/g,
-    "\n"
-  );
-
-  adminApp = initializeApp({
-    credential: cert({
-      projectId: process.env.FIREBASE_ADMIN_PROJECT_ID!,
-      clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL!,
-      privateKey,
-    }),
-  });
-  return adminApp;
 }
 
-export async function getAdminAuth(): Promise<Auth | null> {
+export async function getAdminAuth(): Promise<any | null> {
   const app = await getAdminApp();
   if (!app) return null;
   if (!adminAuth) {
-    const { getAuth } = await import("firebase-admin/auth");
-    adminAuth = getAuth(app);
+    try {
+      const { getAuth } = await import("firebase-admin/auth");
+      adminAuth = getAuth(app);
+    } catch {
+      return null;
+    }
   }
   return adminAuth;
 }
 
-export async function getAdminDb(): Promise<Firestore | null> {
+export async function getAdminDb(): Promise<any | null> {
   const app = await getAdminApp();
   if (!app) return null;
   if (!adminDb) {
-    const { getFirestore } = await import("firebase-admin/firestore");
-    adminDb = getFirestore(app);
+    try {
+      const { getFirestore } = await import("firebase-admin/firestore");
+      adminDb = getFirestore(app);
+    } catch {
+      return null;
+    }
   }
   return adminDb;
 }
