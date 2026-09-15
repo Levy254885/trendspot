@@ -1,12 +1,14 @@
-import { MainNav } from "./MainNav";
 import { Masthead } from "./Masthead";
+import { MainNav } from "./MainNav";
+import { Ticker } from "./Ticker";
 import type { Article } from "@/types";
 
 export function SiteHeader({ breaking }: { breaking?: Article[] }) {
   return (
-    <header className="border-b border-[#e5e5e5] bg-white">
+    <header className="bg-white">
       <Masthead />
       <MainNav />
+      {breaking && breaking.length > 0 && <Ticker stories={breaking} />}
     </header>
   );
 }
