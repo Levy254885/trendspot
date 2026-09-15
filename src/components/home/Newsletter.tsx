@@ -10,11 +10,7 @@ export function Newsletter() {
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     const trimmed = email.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-      setStatus("err");
-      setMessage("Please enter a valid email address.");
-      return;
-    }
+    if (!trimmed) return;
     setStatus("loading");
     try {
       const res = await fetch("/api/newsletter", {
@@ -36,16 +32,16 @@ export function Newsletter() {
   return (
     <section
       id="newsletter"
-      className="mb-7 flex flex-col items-start justify-between gap-5 border border-border bg-surface px-5 py-6 sm:flex-row sm:items-center sm:gap-7 sm:px-7"
+      className="mb-10 flex flex-col items-start justify-between gap-6 border border-border bg-surface px-6 py-7 sm:flex-row sm:items-center sm:gap-8 sm:px-8"
     >
-      <div>
-        <div className="mb-1.5 text-[10px] font-extrabold uppercase tracking-[0.16em] text-red">
+      <div className="max-w-md">
+        <div className="mb-2 text-[10px] font-extrabold uppercase tracking-[0.16em] text-red">
           Daily Newsletter
         </div>
-        <div className="mb-1 font-[family-name:var(--font-bask)] text-[17px] font-bold text-black sm:text-[18px]">
+        <div className="mb-2 font-[family-name:var(--font-bask)] text-[18px] font-bold leading-snug text-black sm:text-[20px]">
           Get TrendSpot.co.ke in Your Inbox
         </div>
-        <div className="font-[family-name:var(--font-serif)] text-[13px] text-gray">
+        <div className="font-[family-name:var(--font-serif)] text-[13.5px] leading-relaxed text-gray">
           Celebrity news, fashion drops, and viral moments — delivered every morning.
         </div>
       </div>
@@ -58,8 +54,8 @@ export function Newsletter() {
               setEmail(e.target.value);
               if (status !== "idle") setStatus("idle");
             }}
-            placeholder="Enter your email address"
-            className="w-full border border-border border-r-0 bg-white px-4 py-2.5 text-[13px] text-ink outline-none focus:border-ink sm:w-[220px]"
+            placeholder="Enter your email"
+            className="w-full border border-border border-r-0 bg-white px-4 py-3 text-[13px] text-ink outline-none focus:border-ink sm:w-[240px]"
             required
             aria-label="Email address"
             disabled={status === "loading"}
@@ -67,16 +63,20 @@ export function Newsletter() {
           <button
             type="submit"
             disabled={status === "loading"}
-            className="whitespace-nowrap border border-black bg-black px-4 py-2.5 text-[12px] font-bold uppercase tracking-wider text-white transition-colors hover:border-red hover:bg-red disabled:opacity-60 sm:px-5"
+            className="whitespace-nowrap border border-black bg-black px-5 py-3 text-[12px] font-bold uppercase tracking-wider text-white transition-colors hover:border-red hover:bg-red disabled:opacity-60"
           >
             {status === "loading" ? "..." : "Sign Up"}
           </button>
         </div>
         {status === "ok" && (
-          <p className="text-[12px] text-green-700" role="status">{message}</p>
+          <p className="text-[12px] text-green-700" role="status">
+            {message}
+          </p>
         )}
         {status === "err" && (
-          <p className="text-[12px] text-red" role="alert">{message}</p>
+          <p className="text-[12px] text-red" role="alert">
+            {message}
+          </p>
         )}
       </form>
     </section>
