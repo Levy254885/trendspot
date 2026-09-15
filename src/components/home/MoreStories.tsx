@@ -12,17 +12,19 @@ export function MoreStories({ stories }: { stories: Article[] }) {
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4 md:gap-5">
         {stories.map((story) => (
           <Link key={story.id} href={`/article/${story.slug}`} className="group block">
-            <ArticleImage
-              src={story.featuredImage.url}
-              alt={story.featuredImage.alt}
-              aspect="16/9"
-              className="mb-3 md:mb-2.5"
-              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 25vw"
-            />
+            <div className="mb-3 overflow-hidden md:mb-2.5">
+              <ArticleImage
+                src={story.featuredImage.url}
+                alt={story.featuredImage.alt}
+                aspect="16/9"
+                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 25vw"
+                className="transition-transform duration-300 group-hover:scale-[1.03]"
+              />
+            </div>
             <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-red md:mb-1 md:text-[9.5px]">
               {story.category}
             </div>
-            <div className="mb-1.5 font-[family-name:var(--font-bask)] text-[18px] font-bold leading-[1.3] text-black group-hover:text-red md:mb-1 md:text-[14px]">
+            <div className="mb-1.5 font-[family-name:var(--font-bask)] text-[18px] font-bold leading-[1.3] text-black transition-colors group-hover:text-red md:mb-1 md:text-[14px]">
               {story.title}
             </div>
             <div className="text-[11px] font-medium text-pale md:text-[10px]">
