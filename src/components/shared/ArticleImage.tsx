@@ -28,7 +28,7 @@ export function ArticleImage({
   return (
     <div
       className={cn(
-        "relative w-full overflow-hidden bg-[#eaeaea]",
+        "relative w-full overflow-hidden bg-ink2",
         aspectMap[aspect],
         className
       )}
@@ -41,6 +41,7 @@ export function ArticleImage({
         sizes={sizes}
         className="object-cover"
       />
+      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-0.5 bg-red" />
     </div>
   );
 }
