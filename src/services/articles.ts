@@ -78,20 +78,20 @@ export async function fetchHomeData() {
   const [featured, latest, mostRead, breaking, all] = await Promise.all([
     fetchFeaturedArticle(),
     fetchLatest(12),
-    fetchMostRead(5),
+    fetchMostRead(4),
     fetchBreakingArticles(),
     fetchPublishedArticles(),
   ]);
 
   const sideStories = all
     .filter((a) => a.id !== featured?.id)
-    .slice(0, 4);
+    .slice(0, 3);
 
-  const fashion = all.filter((a) => a.categorySlug === "fashion").slice(0, 3);
-  const music = all.filter((a) => a.categorySlug === "music").slice(0, 3);
+  const fashion = all.filter((a) => a.categorySlug === "fashion").slice(0, 2);
+  const music = all.filter((a) => a.categorySlug === "music").slice(0, 2);
   const celebrities = all
     .filter((a) => a.categorySlug === "celebrities")
-    .slice(0, 3);
+    .slice(0, 2);
   const awards = all.filter((a) => a.categorySlug === "awards").slice(0, 4);
   const more = all.filter((a) => a.id !== featured?.id).slice(4, 8);
 
@@ -101,7 +101,7 @@ export async function fetchHomeData() {
     fashion,
     music,
     celebrities,
-    latest: latest.slice(0, 4),
+    latest: latest.slice(0, 5),
     mostRead,
     breaking,
     awards,
