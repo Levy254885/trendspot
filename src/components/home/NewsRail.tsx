@@ -11,7 +11,7 @@ export function NewsRail({
   mostRead: Article[];
 }) {
   return (
-    <section className="mb-10 border-b border-border pb-10 md:mb-8 md:pb-8">
+    <section className="mb-10 border-b border-border pb-10 md:mb-7 md:pb-7">
       <div className="md:hidden">
         <div className="mb-10">
           <span className="mb-5 block border-b-2 border-black pb-3 text-[11px] font-extrabold uppercase tracking-[0.18em] text-mid">
@@ -59,9 +59,9 @@ export function NewsRail({
         </div>
       </div>
 
-      <div className="hidden grid-cols-1 gap-8 md:grid lg:grid-cols-[1fr_260px] lg:gap-0">
-        <div className="lg:border-r lg:border-border lg:pr-8">
-          <span className="mb-1 block border-b-2 border-black pb-2.5 text-[10px] font-extrabold uppercase tracking-[0.18em] text-mid">
+      <div className="hidden md:grid md:grid-cols-[1fr_260px] lg:grid-cols-[1fr_280px]">
+        <div className="border-r border-border pr-7">
+          <span className="mb-0 block border-b-2 border-black pb-2.5 text-[10px] font-extrabold uppercase tracking-[0.18em] text-mid">
             Latest News
           </span>
           <div className="flex flex-col">
@@ -69,32 +69,35 @@ export function NewsRail({
               <Link
                 key={story.id}
                 href={`/article/${story.slug}`}
-                className="group grid grid-cols-[1fr_110px] gap-4 border-b border-border2 py-4 last:border-b-0"
+                className="group grid grid-cols-[1fr_120px] gap-5 border-b border-border2 py-4 last:border-b-0"
               >
                 <div className="min-w-0">
                   <div className="mb-1 text-[9.5px] font-bold uppercase tracking-[0.12em] text-red">
                     {story.category}
                   </div>
-                  <div className="mb-1 font-[family-name:var(--font-bask)] text-[15px] font-bold leading-[1.3] text-black group-hover:text-red">
+                  <div className="mb-1 font-[family-name:var(--font-bask)] text-[15px] font-bold leading-[1.3] text-black transition-colors group-hover:text-red">
                     {story.title}
                   </div>
                   <div className="text-[10px] font-semibold uppercase tracking-wider text-pale">
                     By {story.author} · {formatTime(story.publishedAt)}
                   </div>
                 </div>
-                <ArticleImage
-                  src={story.featuredImage.url}
-                  alt={story.featuredImage.alt}
-                  aspect="3/2"
-                  sizes="110px"
-                />
+                <div className="overflow-hidden">
+                  <ArticleImage
+                    src={story.featuredImage.url}
+                    alt={story.featuredImage.alt}
+                    aspect="3/2"
+                    sizes="120px"
+                    className="transition-transform duration-300 group-hover:scale-[1.03]"
+                  />
+                </div>
               </Link>
             ))}
           </div>
         </div>
 
-        <div className="lg:pl-6">
-          <span className="mb-1 block border-b-2 border-black pb-2.5 text-[10px] font-extrabold uppercase tracking-[0.18em] text-mid">
+        <div className="pl-6">
+          <span className="mb-0 block border-b-2 border-black pb-2.5 text-[10px] font-extrabold uppercase tracking-[0.18em] text-mid">
             Most Read
           </span>
           <div className="flex flex-col">
@@ -104,10 +107,10 @@ export function NewsRail({
                 href={`/article/${story.slug}`}
                 className="group border-b border-border2 py-3.5 last:border-b-0"
               >
-                <div className="mb-1 font-[family-name:var(--font-bask)] text-[20px] font-bold leading-none text-border">
+                <div className="mb-1.5 font-[family-name:var(--font-bask)] text-[22px] font-bold leading-none text-border">
                   {String(i + 1).padStart(2, "0")}
                 </div>
-                <div className="mb-1 font-[family-name:var(--font-bask)] text-[13.5px] font-bold leading-[1.3] text-black group-hover:text-red">
+                <div className="mb-1 font-[family-name:var(--font-bask)] text-[14px] font-bold leading-[1.3] text-black transition-colors group-hover:text-red">
                   {story.title}
                 </div>
                 <div className="text-[10px] font-semibold uppercase tracking-wider text-pale">

@@ -82,22 +82,24 @@ function DesktopCol({
           }`}
         >
           {i === 0 && (
-            <ArticleImage
-              src={story.featuredImage.url}
-              alt={story.featuredImage.alt}
-              aspect="3/2"
-              className="mb-2.5"
-              sizes="(max-width: 1024px) 50vw, 30vw"
-            />
+            <div className="mb-2.5 overflow-hidden">
+              <ArticleImage
+                src={story.featuredImage.url}
+                alt={story.featuredImage.alt}
+                aspect="3/2"
+                className="transition-transform duration-300 group-hover:scale-[1.03]"
+                sizes="(max-width: 1280px) 30vw, 340px"
+              />
+            </div>
           )}
           <div className="mb-1 text-[9.5px] font-bold uppercase tracking-[0.12em] text-red">
             {story.tags[0] || story.category}
           </div>
-          <div className="mb-1 font-[family-name:var(--font-bask)] text-[14px] font-bold leading-[1.3] text-black group-hover:text-red">
+          <div className="mb-1 font-[family-name:var(--font-bask)] text-[14.5px] font-bold leading-[1.3] text-black transition-colors group-hover:text-red">
             {story.title}
           </div>
           {i === 0 && (
-            <div className="mb-1 line-clamp-2 font-[family-name:var(--font-serif)] text-[12px] leading-[1.55] text-gray">
+            <div className="mb-1 line-clamp-2 font-[family-name:var(--font-serif)] text-[12.5px] leading-[1.55] text-gray">
               {story.excerpt}
             </div>
           )}
@@ -120,21 +122,23 @@ export function EditorialGrid({
   celebrities: Article[];
 }) {
   return (
-    <section className="mb-10 border-b border-border pb-10 md:mb-8 md:pb-8">
+    <section className="mb-10 border-b border-border pb-10 md:mb-7 md:pb-7">
       <div className="md:hidden">
         <MobileSection label="Fashion" stories={fashion} red />
         <MobileSection label="Music" stories={music} />
         <MobileSection label="Celebrities" stories={celebrities} />
       </div>
 
-      <div className="hidden gap-8 md:grid md:grid-cols-2 lg:grid-cols-3 lg:gap-0">
-        <div className="lg:pr-6">
+      <div className="hidden md:grid md:grid-cols-[1fr_1px_1fr_1px_1fr]">
+        <div className="pr-6">
           <DesktopCol label="Fashion" stories={fashion} red />
         </div>
-        <div className="lg:border-x lg:border-border2 lg:px-6">
+        <div className="bg-border2" aria-hidden />
+        <div className="px-6">
           <DesktopCol label="Music" stories={music} />
         </div>
-        <div className="md:col-span-2 lg:col-span-1 lg:pl-6">
+        <div className="bg-border2" aria-hidden />
+        <div className="pl-6">
           <DesktopCol label="Celebrities" stories={celebrities} />
         </div>
       </div>
