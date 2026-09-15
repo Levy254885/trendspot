@@ -19,7 +19,7 @@ export function MainNav() {
             key={item.href}
             href={item.href}
             className={cn(
-              "whitespace-nowrap border-b-[3px] px-4 py-3 text-[12px] font-bold uppercase tracking-[0.1em] transition-colors",
+              "whitespace-nowrap border-b-[3px] px-5 py-3 text-[12px] font-bold uppercase tracking-[0.1em] transition-colors",
               isActive(item.href)
                 ? "border-red text-red"
                 : "border-transparent text-ink hover:text-red"

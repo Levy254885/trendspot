@@ -1,3 +1,4 @@
+import { UtilityBar } from "./UtilityBar";
 import { Masthead } from "./Masthead";
 import { MainNav } from "./MainNav";
 import { Ticker } from "./Ticker";
@@ -11,6 +12,7 @@ export function SiteHeader({ breaking }: { breaking?: Article[] }) {
         <MobileHeader />
       </div>
       <div className="hidden md:block">
+        <UtilityBar />
         <Masthead />
         <MainNav />
       </div>
