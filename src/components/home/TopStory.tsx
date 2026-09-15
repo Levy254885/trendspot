@@ -10,65 +10,96 @@ export function TopStory({
   featured: Article;
   sideStories: Article[];
 }) {
+  const secondary = sideStories[0];
+  const tertiary = sideStories[1];
+
   return (
-    <section className="mb-14 grid grid-cols-1 gap-8 border-b border-border pb-14 lg:grid-cols-[1fr_280px] lg:gap-8">
-      <div className="overflow-hidden border border-border2 bg-white">
-        <div className="border-b border-border2 px-5 py-3 sm:px-6">
-          <div className="flex items-center gap-2.5 text-[10px] font-extrabold uppercase tracking-[0.2em] text-red">
-            <span className="inline-block h-0.5 w-5 bg-red" />
-            Top Story
-          </div>
+    <section className="mb-8">
+      <h1 className="mb-6 text-center font-[family-name:var(--font-bask)] text-[28px] font-bold uppercase tracking-wide text-red sm:mb-8 sm:text-[32px]">
+        TrendSpot
+      </h1>
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8">
+        <div className="order-1 lg:order-2 lg:col-span-5">
+          <Link href={`/article/${featured.slug}`} className="block">
+            <ArticleImage
+              src={featured.featuredImage.url}
+              alt={featured.featuredImage.alt}
+              aspect="4/3"
+              priority
+              sizes="(max-width: 1024px) 100vw, 42vw"
+            />
+          </Link>
         </div>
-        <Link href={`/article/${featured.slug}`} className="block">
-          <ArticleImage
-            src={featured.featuredImage.url}
-            alt={featured.featuredImage.alt}
-            aspect="16/9"
-            priority
-            sizes="(max-width: 1024px) 100vw, 65vw"
-          />
-        </Link>
-        <div className="p-5 sm:p-6">
-          <h1 className="mb-4 font-[family-name:var(--font-bask)] text-[26px] font-bold leading-[1.15] tracking-[-0.02em] text-black sm:text-[32px] md:text-[36px]">
-            <Link href={`/article/${featured.slug}`} className="transition-colors hover:text-red">
+
+        <div className="order-2 lg:order-1 lg:col-span-4 lg:flex lg:flex-col lg:justify-center">
+          <h2 className="mb-3 font-[family-name:var(--font-bask)] text-[26px] font-bold leading-[1.15] tracking-[-0.01em] text-black sm:text-[30px] lg:text-[32px]">
+            <Link href={`/article/${featured.slug}`} className="hover:underline">
               {featured.title}
             </Link>
-          </h1>
-          <p className="mb-4 max-w-[36rem] font-[family-name:var(--font-serif)] text-[15px] leading-[1.7] text-gray sm:text-[16px]">
+          </h2>
+          <p className="mb-4 text-[16px] leading-[1.5] text-[#3a3a3a]">
             {featured.excerpt}
           </p>
-          <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-mid">
-            By <span className="text-ink">{featured.author}</span>
-            {" · "}
-            {featured.readingTime} min read
-            {" · "}
-            {formatRelative(featured.publishedAt)}
+          <div className="text-[13px] text-[#6e6e6e]">
+            <span>{formatRelative(featured.publishedAt)}</span>
+            <span className="mx-2 text-[#ccc]">|</span>
+            <Link href={`/category/${featured.categorySlug}`} className="hover:underline">
+              {featured.category}
+            </Link>
           </div>
         </div>
+
+        {secondary && (
+          <div className="order-3 border-t border-[#e5e5e5] pt-6 lg:col-span-3 lg:border-t-0 lg:border-l lg:border-[#e5e5e5] lg:pl-8 lg:pt-0">
+            <Link href={`/article/${secondary.slug}`} className="group block">
+              <ArticleImage
+                src={secondary.featuredImage.url}
+                alt={secondary.featuredImage.alt}
+                aspect="16/9"
+                sizes="(max-width: 1024px) 100vw, 25vw"
+                className="mb-3"
+              />
+              <h3 className="mb-2 font-[family-name:var(--font-bask)] text-[18px] font-bold leading-[1.25] text-black group-hover:underline sm:text-[20px]">
+                {secondary.title}
+              </h3>
+              <p className="mb-3 line-clamp-2 text-[14px] leading-[1.45] text-[#3a3a3a]">
+                {secondary.excerpt}
+              </p>
+              <div className="text-[13px] text-[#6e6e6e]">
+                <span>{formatRelative(secondary.publishedAt)}</span>
+                <span className="mx-2 text-[#ccc]">|</span>
+                <span>{secondary.category}</span>
+              </div>
+            </Link>
+          </div>
+        )}
       </div>
 
-      <aside className="flex flex-col gap-4">
-        {sideStories.map((story) => (
-          <Link
-            key={story.id}
-            href={`/article/${story.slug}`}
-            className="group block border border-border2 bg-white p-5 transition-colors hover:border-border"
-          >
-            <div className="mb-2.5 text-[10px] font-extrabold uppercase tracking-[0.14em] text-red">
-              {story.category}
+      {tertiary && (
+        <div className="mt-6 border-t border-[#e5e5e5] pt-6 lg:hidden">
+          <Link href={`/article/${tertiary.slug}`} className="group flex gap-4">
+            <div className="w-[120px] shrink-0">
+              <ArticleImage
+                src={tertiary.featuredImage.url}
+                alt={tertiary.featuredImage.alt}
+                aspect="16/9"
+                sizes="120px"
+              />
             </div>
-            <div className="mb-2.5 font-[family-name:var(--font-bask)] text-[16px] font-bold leading-[1.35] text-black group-hover:text-red">
-              {story.title}
-            </div>
-            <p className="mb-3 line-clamp-2 font-[family-name:var(--font-serif)] text-[13px] leading-[1.55] text-gray">
-              {story.excerpt}
-            </p>
-            <div className="text-[10px] font-semibold uppercase tracking-[0.06em] text-mid">
-              By {story.author}
+            <div className="min-w-0">
+              <h3 className="mb-1 font-[family-name:var(--font-bask)] text-[16px] font-bold leading-[1.25] text-black group-hover:underline">
+                {tertiary.title}
+              </h3>
+              <div className="text-[12px] text-[#6e6e6e]">
+                {formatRelative(tertiary.publishedAt)}
+                <span className="mx-1.5 text-[#ccc]">|</span>
+                {tertiary.category}
+              </div>
             </div>
           </Link>
-        ))}
-      </aside>
+        </div>
+      )}
     </section>
   );
 }

@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 type Props = {
   src: string;
   alt: string;
-  aspect?: "16/9" | "3/2" | "1/1";
+  aspect?: "16/9" | "3/2" | "1/1" | "4/3";
   priority?: boolean;
   className?: string;
   sizes?: string;
@@ -13,6 +13,7 @@ type Props = {
 const aspectMap = {
   "16/9": "aspect-video",
   "3/2": "aspect-[3/2]",
+  "4/3": "aspect-[4/3]",
   "1/1": "aspect-square",
 };
 
@@ -27,7 +28,7 @@ export function ArticleImage({
   return (
     <div
       className={cn(
-        "relative w-full overflow-hidden bg-ink2",
+        "relative w-full overflow-hidden bg-[#eaeaea]",
         aspectMap[aspect],
         className
       )}
@@ -40,7 +41,6 @@ export function ArticleImage({
         sizes={sizes}
         className="object-cover"
       />
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-0.5 bg-red" />
     </div>
   );
 }

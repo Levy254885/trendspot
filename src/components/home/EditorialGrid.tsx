@@ -1,41 +1,7 @@
+import Link from "next/link";
 import type { Article } from "@/types";
-import { StoryCard } from "@/components/shared/StoryCard";
-
-function Col({
-  label,
-  stories,
-  red,
-}: {
-  label: string;
-  stories: Article[];
-  red?: boolean;
-}) {
-  if (!stories.length) return null;
-  const [lead, ...rest] = stories;
-
-  return (
-    <div className="min-w-0">
-      <span
-        className={`mb-5 block border-b-2 pb-3 text-[10px] font-extrabold uppercase tracking-[0.18em] ${
-          red ? "border-red text-red" : "border-black text-mid"
-        }`}
-      >
-        {label}
-      </span>
-      <div className="flex flex-col gap-5">
-        <StoryCard article={lead} variant="feature" showExcerpt />
-        {rest.map((story) => (
-          <StoryCard
-            key={story.id}
-            article={story}
-            variant="compact"
-            showImage={false}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
+import { ArticleImage } from "@/components/shared/ArticleImage";
+import { formatRelative } from "@/lib/utils";
 
 export function EditorialGrid({
   fashion,
@@ -46,12 +12,39 @@ export function EditorialGrid({
   music: Article[];
   celebrities: Article[];
 }) {
+  const stories = [
+    ...fashion.slice(0, 1),
+    ...music.slice(0, 1),
+    ...celebrities.slice(0, 1),
+    ...fashion.slice(1, 2),
+  ]
+    .filter(Boolean)
+    .slice(0, 4);
+
+  if (!stories.length) return null;
+
   return (
-    <section className="mb-14 border-b border-border pb-14">
-      <div className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
-        <Col label="Fashion" stories={fashion} red />
-        <Col label="Music" stories={music} />
-        <Col label="Celebrities" stories={celebrities} />
+    <section className="mb-10 border-t border-[#e5e5e5] pt-8">
+      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+        {stories.map((story) => (
+          <Link key={story.id} href={`/article/${story.slug}`} className="group block">
+            <ArticleImage
+              src={story.featuredImage.url}
+              alt={story.featuredImage.alt}
+              aspect="16/9"
+              className="mb-3"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            />
+            <h3 className="mb-2 font-[family-name:var(--font-bask)] text-[17px] font-bold leading-[1.25] text-black group-hover:underline sm:text-[18px]">
+              {story.title}
+            </h3>
+            <div className="text-[13px] text-[#6e6e6e]">
+              <span>{formatRelative(story.publishedAt)}</span>
+              <span className="mx-2 text-[#ccc]">|</span>
+              <span>{story.category}</span>
+            </div>
+          </Link>
+        ))}
       </div>
     </section>
   );
