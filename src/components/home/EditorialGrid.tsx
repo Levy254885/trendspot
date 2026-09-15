@@ -26,7 +26,7 @@ function Col({
       </span>
       <Link
         href={`/article/${lead.slug}`}
-        className="group mb-6 block border-b border-border2 pb-6"
+        className="group mb-8 block border-b border-border2 pb-8"
       >
         <ArticleImage
           src={lead.featuredImage.url}
@@ -52,7 +52,7 @@ function Col({
         <Link
           key={story.id}
           href={`/article/${story.slug}`}
-          className="group block py-1"
+          className="group block py-4"
         >
           <div className="mb-1.5 text-[9.5px] font-bold uppercase tracking-[0.12em] text-red">
             {story.tags[0] || story.category}
@@ -80,14 +80,14 @@ export function EditorialGrid({
 }) {
   return (
     <section className="mb-14 border-b border-border pb-14">
-      <div className="grid grid-cols-1 gap-12 md:grid-cols-3 md:gap-0">
-        <div className="md:pr-8">
+      <div className="grid grid-cols-1 gap-14 md:grid-cols-3 md:gap-0">
+        <div className="md:pr-10">
           <Col label="Fashion" stories={fashion} red />
         </div>
-        <div className="md:border-x md:border-border2 md:px-8">
+        <div className="md:border-x md:border-border2 md:px-10">
           <Col label="Music" stories={music} />
         </div>
-        <div className="md:pl-8">
+        <div className="md:pl-10">
           <Col label="Celebrities" stories={celebrities} />
         </div>
       </div>

@@ -12,7 +12,7 @@ export function NewsRail({
 }) {
   return (
     <section className="mb-14 grid grid-cols-1 gap-12 border-b border-border pb-14 lg:grid-cols-[1fr_220px] lg:gap-0">
-      <div className="lg:border-r lg:border-border lg:pr-10">
+      <div className="lg:border-r lg:border-border lg:pr-12">
         <span className="mb-2 block border-b-2 border-black pb-3 text-[10px] font-extrabold uppercase tracking-[0.18em] text-mid">
           Latest News
         </span>
@@ -21,7 +21,7 @@ export function NewsRail({
             <Link
               key={story.id}
               href={`/article/${story.slug}`}
-              className="group grid grid-cols-[1fr_96px] gap-5 border-b border-border2 py-5 transition-opacity hover:opacity-90 sm:grid-cols-[1fr_120px] last:border-b-0"
+              className="group grid grid-cols-[1fr_96px] gap-6 border-b border-border2 py-7 transition-opacity hover:opacity-90 sm:grid-cols-[1fr_120px] last:border-b-0"
             >
               <div className="min-w-0">
                 <div className="mb-2 text-[9.5px] font-bold uppercase tracking-[0.12em] text-red">
@@ -45,7 +45,7 @@ export function NewsRail({
         </div>
       </div>
 
-      <div className="lg:pl-8">
+      <div className="lg:pl-10">
         <span className="mb-2 block border-b-2 border-black pb-3 text-[10px] font-extrabold uppercase tracking-[0.18em] text-mid">
           Most Read
         </span>
@@ -54,7 +54,7 @@ export function NewsRail({
             <Link
               key={story.id}
               href={`/article/${story.slug}`}
-              className="group border-b border-border2 py-5 transition-opacity hover:opacity-90 last:border-b-0"
+              className="group border-b border-border2 py-7 transition-opacity hover:opacity-90 last:border-b-0"
             >
               <div className="mb-2 font-[family-name:var(--font-bask)] text-[24px] font-bold leading-none text-border">
                 {String(i + 1).padStart(2, "0")}

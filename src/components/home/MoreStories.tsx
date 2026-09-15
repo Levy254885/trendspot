@@ -6,10 +6,10 @@ export function MoreStories({ stories }: { stories: Article[] }) {
   if (!stories.length) return null;
   return (
     <section className="mb-16">
-      <div className="mb-8 text-[10px] font-extrabold uppercase tracking-[0.18em] text-mid">
+      <div className="mb-10 text-[10px] font-extrabold uppercase tracking-[0.18em] text-mid">
         More Stories
       </div>
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-3 sm:gap-8">
+      <div className="grid grid-cols-1 gap-10 sm:grid-cols-3 sm:gap-12">
         {stories.map((story) => (
           <Link
             key={story.id}
@@ -20,7 +20,7 @@ export function MoreStories({ stories }: { stories: Article[] }) {
               src={story.featuredImage.url}
               alt={story.featuredImage.alt}
               aspect="3/2"
-              className="mb-4"
+              className="mb-5"
               sizes="(max-width: 640px) 100vw, 33vw"
             />
             <div className="mb-2 text-[9.5px] font-bold uppercase tracking-[0.12em] text-red">

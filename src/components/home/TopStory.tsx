@@ -49,17 +49,17 @@ export function TopStory({
           <Link
             key={story.id}
             href={`/article/${story.slug}`}
-            className={`group border-b border-border2 py-6 transition-opacity hover:opacity-90 ${
+            className={`group border-b border-border2 py-8 transition-opacity hover:opacity-90 ${
               i === 0 ? "pt-0" : ""
             } ${i === sideStories.length - 1 ? "border-b-0 pb-0" : ""}`}
           >
-            <div className="mb-2.5 text-[10px] font-extrabold uppercase tracking-[0.14em] text-red">
+            <div className="mb-3 text-[10px] font-extrabold uppercase tracking-[0.14em] text-red">
               {story.category}
             </div>
-            <div className="mb-2.5 font-[family-name:var(--font-bask)] text-[16px] font-bold leading-[1.35] text-black group-hover:text-red">
+            <div className="mb-3 font-[family-name:var(--font-bask)] text-[16px] font-bold leading-[1.35] text-black group-hover:text-red">
               {story.title}
             </div>
-            <p className="mb-2.5 line-clamp-2 font-[family-name:var(--font-serif)] text-[13px] leading-[1.55] text-gray">
+            <p className="mb-3 line-clamp-2 font-[family-name:var(--font-serif)] text-[13px] leading-[1.55] text-gray">
               {story.excerpt}
             </p>
             <div className="text-[10px] font-semibold uppercase tracking-[0.06em] text-mid">
