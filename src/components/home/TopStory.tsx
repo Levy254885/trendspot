@@ -11,7 +11,7 @@ export function TopStory({
   sideStories: Article[];
 }) {
   return (
-    <section className="mb-10 border-b border-border pb-10 md:mb-8 md:pb-8">
+    <section className="mb-10 border-b border-border pb-10 md:mb-7 md:pb-7">
       <div className="md:hidden">
         <div className="mb-3 text-[10px] font-extrabold uppercase tracking-[0.18em] text-red">
           Top Story
@@ -63,31 +63,31 @@ export function TopStory({
         </div>
       </div>
 
-      <div className="hidden grid-cols-1 gap-8 md:grid md:grid-cols-[1fr_280px] lg:grid-cols-[1fr_300px] lg:gap-0">
-        <div className="lg:border-r lg:border-border lg:pr-8">
-          <div className="mb-3 flex items-center gap-2 text-[10.5px] font-extrabold uppercase tracking-[0.18em] text-red">
-            <span className="inline-block h-0.5 w-6 bg-red" />
+      <div className="hidden md:grid md:grid-cols-[1fr_300px] lg:grid-cols-[1fr_320px]">
+        <div className="border-r border-border pr-7">
+          <div className="mb-2.5 flex items-center gap-2 text-[10.5px] font-extrabold uppercase tracking-[0.18em] text-red">
+            <span className="inline-block h-0.5 w-6 bg-red" aria-hidden />
             Top Story · Cover
           </div>
-          <Link href={`/article/${featured.slug}`} className="block">
+          <Link href={`/article/${featured.slug}`} className="group block overflow-hidden">
             <ArticleImage
               src={featured.featuredImage.url}
               alt={featured.featuredImage.alt}
               aspect="16/9"
               priority
-              sizes="(max-width: 1024px) 100vw, 70vw"
-              className="mb-4"
+              sizes="(max-width: 1280px) 70vw, 800px"
+              className="mb-4 transition-transform duration-300 group-hover:scale-[1.02]"
             />
           </Link>
-          <h1 className="mb-3 font-[family-name:var(--font-bask)] text-[28px] font-bold leading-[1.15] tracking-[-0.01em] text-black lg:text-[34px]">
-            <Link href={`/article/${featured.slug}`} className="hover:text-red">
+          <h1 className="mb-3 font-[family-name:var(--font-bask)] text-[32px] font-bold leading-[1.15] tracking-[-0.01em] text-black lg:text-[36px]">
+            <Link href={`/article/${featured.slug}`} className="transition-colors hover:text-red">
               {featured.title}
             </Link>
           </h1>
-          <p className="mb-3 max-w-[40rem] font-[family-name:var(--font-serif)] text-[15px] leading-[1.65] text-gray">
+          <p className="mb-3.5 max-w-[36rem] font-[family-name:var(--font-serif)] text-[15px] leading-[1.65] text-gray">
             {featured.excerpt}
           </p>
-          <div className="text-[11.5px] font-semibold uppercase tracking-wider text-mid">
+          <div className="text-[11.5px] font-semibold uppercase tracking-[0.04em] text-mid">
             By <span className="text-ink">{featured.author}</span>
             {" · "}
             {featured.readingTime} min read
@@ -96,19 +96,19 @@ export function TopStory({
           </div>
         </div>
 
-        <aside className="flex flex-col lg:pl-6">
-          {sideStories.map((story, i) => (
+        <aside className="flex flex-col pl-6">
+          {sideStories.slice(0, 3).map((story, i) => (
             <Link
               key={story.id}
               href={`/article/${story.slug}`}
               className={`group border-b border-border2 py-4 transition-opacity hover:opacity-80 ${
                 i === 0 ? "pt-0" : ""
-              } ${i === sideStories.length - 1 ? "border-b-0 pb-0" : ""}`}
+              } ${i === Math.min(sideStories.length, 3) - 1 ? "border-b-0 pb-0" : ""}`}
             >
               <div className="mb-1.5 text-[10px] font-extrabold uppercase tracking-[0.14em] text-red">
                 {story.category}
               </div>
-              <div className="mb-1.5 font-[family-name:var(--font-bask)] text-[15px] font-bold leading-[1.3] text-black group-hover:text-red">
+              <div className="mb-1.5 font-[family-name:var(--font-bask)] text-[15px] font-bold leading-[1.3] text-black group-hover:text-red lg:text-[16px]">
                 {story.title}
               </div>
               <p className="mb-1.5 line-clamp-2 font-[family-name:var(--font-serif)] text-[12.5px] leading-[1.55] text-gray">
