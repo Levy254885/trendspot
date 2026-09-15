@@ -15,10 +15,6 @@ export const NAV_ITEMS: NavItem[] = [
   { label: "Celebrities", href: "/category/celebrities" },
   { label: "Music", href: "/category/music" },
   { label: "Entertainment", href: "/category/entertainment" },
-  { label: "Awards", href: "/category/awards" },
-  { label: "Royals", href: "/category/royals" },
-  { label: "TV", href: "/category/tv" },
-  { label: "Lifestyle", href: "/category/lifestyle" },
   { label: "Trending", href: "/category/trending" },
 ];
 

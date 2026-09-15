@@ -32,17 +32,17 @@ export function Newsletter() {
   return (
     <section
       id="newsletter"
-      className="mb-10 flex flex-col items-start justify-between gap-6 border border-border bg-surface px-6 py-7 sm:flex-row sm:items-center sm:gap-8 sm:px-8"
+      className="mb-14 flex flex-col items-start justify-between gap-6 border border-border bg-surface px-6 py-8 sm:flex-row sm:items-center sm:gap-10 sm:px-10"
     >
       <div className="max-w-md">
         <div className="mb-2 text-[10px] font-extrabold uppercase tracking-[0.16em] text-red">
           Daily Newsletter
         </div>
-        <div className="mb-2 font-[family-name:var(--font-bask)] text-[18px] font-bold leading-snug text-black sm:text-[20px]">
-          Get TrendSpot.co.ke in Your Inbox
+        <div className="mb-2 font-[family-name:var(--font-bask)] text-[20px] font-bold leading-snug text-black">
+          Get TrendSpot in Your Inbox
         </div>
-        <div className="font-[family-name:var(--font-serif)] text-[13.5px] leading-relaxed text-gray">
-          Celebrity news, fashion drops, and viral moments — delivered every morning.
+        <div className="font-[family-name:var(--font-serif)] text-[14px] leading-relaxed text-gray">
+          Celebrity news, fashion drops, and viral moments — every morning.
         </div>
       </div>
       <form onSubmit={onSubmit} className="flex w-full shrink-0 flex-col gap-2 sm:w-auto">
@@ -54,8 +54,8 @@ export function Newsletter() {
               setEmail(e.target.value);
               if (status !== "idle") setStatus("idle");
             }}
-            placeholder="Enter your email"
-            className="w-full border border-border border-r-0 bg-white px-4 py-3 text-[13px] text-ink outline-none focus:border-ink sm:w-[240px]"
+            placeholder="Your email"
+            className="w-full border border-border border-r-0 bg-white px-4 py-3 text-[13px] text-ink outline-none focus:border-ink sm:w-[220px]"
             required
             aria-label="Email address"
             disabled={status === "loading"}
@@ -69,14 +69,10 @@ export function Newsletter() {
           </button>
         </div>
         {status === "ok" && (
-          <p className="text-[12px] text-green-700" role="status">
-            {message}
-          </p>
+          <p className="text-[12px] text-green-700" role="status">{message}</p>
         )}
         {status === "err" && (
-          <p className="text-[12px] text-red" role="alert">
-            {message}
-          </p>
+          <p className="text-[12px] text-red" role="alert">{message}</p>
         )}
       </form>
     </section>
