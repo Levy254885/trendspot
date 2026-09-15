@@ -15,11 +15,7 @@ export function MainNav() {
   }, [pathname]);
 
   useEffect(() => {
-    if (open) {
-      document.body.classList.add("menu-open");
-    } else {
-      document.body.classList.remove("menu-open");
-    }
+    document.body.classList.toggle("menu-open", open);
     return () => document.body.classList.remove("menu-open");
   }, [open]);
 
@@ -29,17 +25,17 @@ export function MainNav() {
   };
 
   return (
-    <nav className="border-b border-border bg-white" aria-label="Main">
-      <div className="mx-auto hidden max-w-[1040px] items-center justify-center gap-1 px-8 md:flex">
+    <nav className="bg-white" aria-label="Main">
+      <div className="mx-auto hidden max-w-[1280px] items-center justify-center gap-0 overflow-x-auto px-4 md:flex">
         {NAV_ITEMS.map((item) => (
           <Link
             key={item.href}
             href={item.href}
             className={cn(
-              "px-4 py-3.5 text-[12px] font-semibold uppercase tracking-[0.12em] transition-colors",
+              "whitespace-nowrap border-b-[3px] px-3.5 py-3 text-[14px] font-medium text-[#1a1a1a] transition-colors hover:text-black",
               isActive(item.href)
-                ? "text-red"
-                : "text-ink hover:text-red"
+                ? "border-red font-bold text-black"
+                : "border-transparent"
             )}
           >
             {item.label}
@@ -47,57 +43,45 @@ export function MainNav() {
         ))}
       </div>
 
-      <div className="mx-auto flex max-w-[1040px] items-center justify-between px-5 py-3 md:hidden">
-        <span className="text-[12px] font-bold uppercase tracking-[0.14em] text-ink">
-          Sections
-        </span>
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          className="flex h-11 w-11 items-center justify-center rounded-sm border border-border2"
-          aria-expanded={open}
-          aria-controls="mobile-menu"
-          aria-label={open ? "Close menu" : "Open menu"}
-        >
-          {open ? (
+      <div className="md:hidden">
+        <div className="flex items-center justify-between border-t border-[#e5e5e5] px-4 py-2">
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            className="flex items-center gap-2 py-2 text-[14px] font-bold text-ink"
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+          >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M18 6L6 18M6 6l12 12" />
+              {open ? (
+                <path d="M18 6L6 18M6 6l12 12" />
+              ) : (
+                <path d="M3 12h18M3 6h18M3 18h18" />
+              )}
             </svg>
-          ) : (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M3 12h18M3 6h18M3 18h18" />
-            </svg>
-          )}
-        </button>
-      </div>
-
-      {open && (
-        <div
-          id="mobile-menu"
-          className="border-t border-border2 bg-white md:hidden"
-        >
-          <div className="flex flex-col px-5 py-3">
+            Menu
+          </button>
+          <Link href="/search" className="py-2 text-[14px] font-medium text-ink">
+            Search
+          </Link>
+        </div>
+        {open && (
+          <div id="mobile-menu" className="border-t border-[#e5e5e5] bg-white px-4 pb-4">
             {NAV_ITEMS.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "border-b border-border2 py-4 text-[14px] font-semibold uppercase tracking-[0.1em] last:border-b-0",
-                  isActive(item.href) ? "text-red" : "text-ink"
+                  "block border-b border-[#eee] py-3.5 text-[16px]",
+                  isActive(item.href) ? "font-bold text-red" : "font-medium text-ink"
                 )}
               >
                 {item.label}
               </Link>
             ))}
-            <Link
-              href="/search"
-              className="border-t border-border2 py-4 text-[14px] font-semibold uppercase tracking-[0.1em] text-mid"
-            >
-              Search
-            </Link>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </nav>
   );
 }

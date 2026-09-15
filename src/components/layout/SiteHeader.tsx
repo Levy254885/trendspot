@@ -1,16 +1,12 @@
-import { UtilityBar } from "./UtilityBar";
-import { Masthead } from "./Masthead";
 import { MainNav } from "./MainNav";
-import { Ticker } from "./Ticker";
+import { Masthead } from "./Masthead";
 import type { Article } from "@/types";
 
 export function SiteHeader({ breaking }: { breaking?: Article[] }) {
   return (
-    <header>
-      <UtilityBar />
+    <header className="border-b border-[#e5e5e5] bg-white">
       <Masthead />
       <MainNav />
-      {breaking && breaking.length > 0 && <Ticker stories={breaking} />}
     </header>
   );
 }

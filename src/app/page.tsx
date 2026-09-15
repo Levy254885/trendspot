@@ -15,7 +15,7 @@ export default async function HomePage() {
   return (
     <>
       <SiteHeader breaking={data.breaking} />
-      <main className="mx-auto max-w-[1040px] px-5 pt-10 sm:px-10 lg:px-8">
+      <main className="mx-auto max-w-[1280px] px-4 pt-6 sm:px-6 sm:pt-8">
         {data.featured && (
           <TopStory featured={data.featured} sideStories={data.sideStories} />
         )}
