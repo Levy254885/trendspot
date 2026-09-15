@@ -30,15 +30,14 @@ export function MainNav() {
 
   return (
     <nav className="border-b border-border bg-white" aria-label="Main">
-      <div className="mx-auto flex max-w-[1100px] items-center justify-between px-5 sm:px-8">
-        {/* Desktop */}
+      <div className="mx-auto flex max-w-[1040px] items-center justify-between px-5 sm:px-10 lg:px-8">
         <div className="hidden items-center justify-center gap-0 overflow-x-auto md:flex md:w-full">
           {NAV_ITEMS.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "whitespace-nowrap border-b-2 px-3 py-[11px] text-[11.5px] font-bold uppercase tracking-[0.1em] transition-colors lg:px-4",
+                "whitespace-nowrap border-b-2 px-3 py-[11px] text-[11.5px] font-bold uppercase tracking-[0.1em] transition-colors lg:px-5",
                 isActive(item.href)
                   ? "border-red text-red"
                   : "border-transparent text-ink hover:text-red"
@@ -49,7 +48,6 @@ export function MainNav() {
           ))}
         </div>
 
-        {/* Mobile toggle */}
         <div className="flex w-full items-center justify-between py-3 md:hidden">
           <span className="text-[11px] font-bold uppercase tracking-wider text-mid">
             Menu
@@ -75,13 +73,9 @@ export function MainNav() {
         </div>
       </div>
 
-      {/* Mobile panel */}
       {open && (
-        <div
-          id="mobile-menu"
-          className="border-t border-border2 bg-white md:hidden"
-        >
-          <div className="flex flex-col px-4 py-2">
+        <div id="mobile-menu" className="border-t border-border2 bg-white md:hidden">
+          <div className="flex flex-col px-5 py-2">
             {NAV_ITEMS.map((item) => (
               <Link
                 key={item.href}
@@ -94,16 +88,10 @@ export function MainNav() {
                 {item.label}
               </Link>
             ))}
-            <Link
-              href="/search"
-              className="py-3.5 text-[13px] font-bold uppercase tracking-wider text-ink"
-            >
+            <Link href="/search" className="py-3.5 text-[13px] font-bold uppercase tracking-wider text-ink">
               Search
             </Link>
-            <Link
-              href="/contact"
-              className="py-3.5 text-[13px] font-bold uppercase tracking-wider text-ink"
-            >
+            <Link href="/contact" className="py-3.5 text-[13px] font-bold uppercase tracking-wider text-ink">
               Contact / Tips
             </Link>
           </div>

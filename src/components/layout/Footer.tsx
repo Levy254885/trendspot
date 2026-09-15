@@ -4,7 +4,7 @@ import { FOOTER_SECTIONS, SITE_TAGLINE } from "@/lib/constants";
 export function Footer() {
   return (
     <footer className="bg-black pb-6 pt-10">
-      <div className="mx-auto max-w-[1100px] px-5 sm:px-8">
+      <div className="mx-auto max-w-[1040px] px-5 sm:px-10 lg:px-8">
         <div className="font-[family-name:var(--font-bask)] text-[24px] font-bold text-white sm:text-[28px]">
           TrendSpot
           <span className="relative top-[-3px] ml-0.5 align-super font-[family-name:var(--font-ui)] text-[12px] font-semibold text-red sm:text-[13px]">

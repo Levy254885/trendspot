@@ -10,7 +10,7 @@ export function UtilityBar() {
 
   return (
     <div className="border-b border-border2">
-      <div className="mx-auto flex max-w-[1100px] items-center justify-between px-5 py-2 sm:px-8">
+      <div className="mx-auto flex max-w-[1040px] items-center justify-between px-5 py-2 sm:px-10 lg:px-8">
         <div className="flex items-center gap-3 sm:gap-4">
           <span className="hidden text-[11px] tracking-wide text-mid sm:inline">
             {today}
@@ -39,12 +39,6 @@ export function UtilityBar() {
             className="hidden text-[11px] font-semibold uppercase tracking-wider text-mid transition-colors hover:text-ink sm:inline"
           >
             Newsletters
-          </Link>
-          <Link
-            href="/category/awards"
-            className="hidden text-[11px] font-semibold uppercase tracking-wider text-mid transition-colors hover:text-ink md:inline"
-          >
-            Awards
           </Link>
           <Link
             href="/search"

@@ -8,7 +8,7 @@ export function Ticker({ stories }: { stories: Article[] }) {
 
   return (
     <div className="overflow-hidden border-b border-border2 bg-surface py-[7px]">
-      <div className="mx-auto flex max-w-[1100px] items-center gap-0 px-5 sm:px-8">
+      <div className="mx-auto flex max-w-[1040px] items-center gap-0 px-5 sm:px-10 lg:px-8">
         <span className="mr-3 shrink-0 bg-red px-2.5 py-[3px] text-[10px] font-extrabold uppercase tracking-[0.14em] text-white sm:mr-4">
           Breaking
         </span>
