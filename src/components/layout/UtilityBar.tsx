@@ -1,30 +1,29 @@
 import Link from "next/link";
+import { SubscribeButton } from "./SubscribeButton";
 
 export function UtilityBar() {
-  const today = new Date().toLocaleDateString("en-GB", {
+  const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
-    day: "numeric",
     month: "long",
+    day: "numeric",
     year: "numeric",
+    timeZone: "Africa/Nairobi",
   });
 
   return (
-    <div className="border-b border-border2">
-      <div className="mx-auto flex max-w-[1180px] items-center justify-between px-6 py-2.5">
-        <span className="text-[11px] tracking-wide text-mid">{today}</span>
-        <div className="flex items-center gap-6">
-          <Link
-            href="/search"
-            className="text-[11px] font-semibold uppercase tracking-wider text-mid transition-colors hover:text-ink"
-          >
-            Search
+    <div className="util-bar">
+      <div className="util-i">
+        <div className="util-left">
+          <span className="util-date">{today}</span>
+          <Link className="util-tip" href="/contact">
+            <i className="ti ti-send" style={{ fontSize: "12px" }} aria-hidden="true"></i> Got a tip?
           </Link>
-          <Link
-            href="/#newsletter"
-            className="bg-black px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-white transition-colors hover:bg-red"
-          >
-            Subscribe
-          </Link>
+        </div>
+        <div className="util-right">
+          <Link className="util-link" href="/#newsletter">Newsletters</Link>
+          <Link className="util-link" href="/category/awards">Awards</Link>
+          <Link className="util-link" href="/category/charts">Charts</Link>
+          <SubscribeButton />
         </div>
       </div>
     </div>
