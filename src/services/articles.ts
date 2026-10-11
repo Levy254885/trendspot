@@ -70,23 +70,28 @@ export async function fetchRelated(
 }
 
 export async function fetchHomeData() {
-  const [featured, latest, mostRead, breaking, all] = await Promise.all([
+  const [featured, mostRead, breaking, all] = await Promise.all([
     fetchFeaturedArticle(),
-    fetchLatest(8),
-    fetchMostRead(4),
+    fetchMostRead(5),
     fetchBreakingArticles(),
     fetchPublishedArticles(),
   ]);
 
+  // Top story: 4 side stories next to the cover story.
   const sideStories = all
     .filter((a) => a.id !== featured?.id)
-    .slice(0, 3);
+    .slice(0, 4);
 
-  const fashion = all.filter((a) => a.categorySlug === "fashion").slice(0, 2);
-  const music = all.filter((a) => a.categorySlug === "music").slice(0, 2);
-  const celebrities = all
-    .filter((a) => a.categorySlug === "celebrities")
-    .slice(0, 2);
+  // Latest News: 4 rows that aren't already showing in the top story block.
+  const topIds = new Set([featured?.id, ...sideStories.map((a) => a.id)]);
+  const latest = all.filter((a) => !topIds.has(a.id)).slice(0, 4);
+
+  // Editorial grid: 3 stories per column.
+  const inSection = (slug: string) =>
+    all.filter((a) => a.categorySlug === slug && a.id !== featured?.id).slice(0, 3);
+  const fashion = inSection("fashion");
+  const music = inSection("music");
+  const celebrities = inSection("celebrities");
   const awardsRaw = all.filter((a) => a.categorySlug === "awards");
   const awards =
     awardsRaw.length >= 4
@@ -100,9 +105,9 @@ export async function fetchHomeData() {
     fashion,
     music,
     celebrities,
-    latest: latest.slice(0, 5),
+    latest,
     mostRead,
-    breaking: breaking.slice(0, 3),
+    breaking: breaking.slice(0, 6),
     awards,
     more,
   };
