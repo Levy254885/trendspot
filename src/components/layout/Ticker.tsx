@@ -7,7 +7,7 @@ export function Ticker({ stories }: { stories: Article[] }) {
   const items = [...stories, ...stories];
 
   return (
-    <div className="overflow-hidden border-b border-border2 bg-surface py-2">
+    <div className="overflow-hidden border-b border-border2 bg-surface py-2.5">
       <div className="mx-auto flex max-w-[1180px] items-center px-4 md:px-6">
         <span className="mr-3 shrink-0 bg-red px-2 py-[3px] text-[9px] font-extrabold uppercase tracking-[0.12em] text-white md:mr-4 md:text-[10px]">
           Breaking
