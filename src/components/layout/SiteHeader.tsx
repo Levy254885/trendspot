@@ -16,7 +16,11 @@ export function SiteHeader({ breaking }: { breaking?: Article[] }) {
         <Masthead />
         <MainNav />
       </div>
-      {breaking && breaking.length > 0 && <Ticker stories={breaking} />}
+      {breaking && breaking.length > 0 && (
+        <div className="hidden md:block">
+          <Ticker stories={breaking} />
+        </div>
+      )}
     </header>
   );
 }
