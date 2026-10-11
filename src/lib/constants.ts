@@ -15,7 +15,12 @@ export const NAV_ITEMS: NavItem[] = [
   { label: "Celebrities", href: "/category/celebrities" },
   { label: "Music", href: "/category/music" },
   { label: "Entertainment", href: "/category/entertainment" },
-  { label: "Trending", href: "/category/trending" },
+  { label: "Awards", href: "/category/awards" },
+  { label: "Royals", href: "/category/royals" },
+  { label: "Business", href: "/category/business" },
+  { label: "TV", href: "/category/tv" },
+  { label: "Lists", href: "/category/lists" },
+  { label: "Video", href: "/category/video" },
 ];
 
 export const FOOTER_SECTIONS = [
@@ -35,15 +40,17 @@ export const FOOTER_SECTIONS = [
       { label: "Awards", href: "/category/awards" },
       { label: "TV", href: "/category/tv" },
       { label: "Royals", href: "/category/royals" },
-      { label: "Lifestyle", href: "/category/lifestyle" },
+      { label: "Beauty", href: "/category/beauty" },
+      { label: "Lists", href: "/category/lists" },
     ],
   },
   {
     label: "Company",
     links: [
       { label: "About Us", href: "/about" },
-      { label: "Contact", href: "/contact" },
+      { label: "Advertise", href: "/contact" },
       { label: "Newsletter", href: "/#newsletter" },
+      { label: "Contact", href: "/contact" },
       { label: "Tip Line", href: "/contact" },
     ],
   },
@@ -52,7 +59,8 @@ export const FOOTER_SECTIONS = [
     links: [
       { label: "Privacy Policy", href: "/privacy" },
       { label: "Terms of Use", href: "/terms" },
-      { label: "Disclaimer", href: "/disclaimer" },
+      { label: "Cookies", href: "/privacy" },
+      { label: "Accessibility", href: "/contact" },
     ],
   },
 ];
