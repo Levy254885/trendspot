@@ -8,6 +8,8 @@ type Props = {
   priority?: boolean;
   className?: string;
   sizes?: string;
+  /** Thin red rule along the bottom edge. Reserved for hero images. */
+  accent?: boolean;
 };
 
 const aspectMap = {
@@ -24,6 +26,7 @@ export function ArticleImage({
   priority = false,
   className,
   sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
+  accent = false,
 }: Props) {
   return (
     <div
@@ -41,7 +44,9 @@ export function ArticleImage({
         sizes={sizes}
         className="object-cover"
       />
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-0.5 bg-red" />
+      {accent && (
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-0.5 bg-red" />
+      )}
     </div>
   );
 }
