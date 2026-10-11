@@ -5,30 +5,27 @@ import { ArticleImage } from "@/components/shared/ArticleImage";
 export function MoreStories({ stories }: { stories: Article[] }) {
   if (!stories.length) return null;
   return (
-    <section className="mb-12 border-t border-border pt-8 md:mb-12 md:pt-6">
-      <div className="mb-6 text-[11px] font-extrabold uppercase tracking-[0.18em] text-mid md:mb-5 md:text-[10px]">
+    <section className="mb-16 md:mb-20">
+      <span className="mb-8 block border-b-2 border-black pb-3 text-[11px] font-extrabold uppercase tracking-[0.18em] text-ink md:text-[10px]">
         More Stories
-      </div>
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4 md:gap-5">
-        {stories.map((story) => (
+      </span>
+      <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-3 md:gap-10">
+        {stories.slice(0, 3).map((story) => (
           <Link key={story.id} href={`/article/${story.slug}`} className="group block">
-            <div className="mb-3 overflow-hidden md:mb-2.5">
+            <div className="mb-4 overflow-hidden">
               <ArticleImage
                 src={story.featuredImage.url}
                 alt={story.featuredImage.alt}
                 aspect="16/9"
-                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 25vw"
+                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
                 className="transition-transform duration-300 group-hover:scale-[1.03]"
               />
             </div>
-            <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-red md:mb-1 md:text-[9.5px]">
+            <div className="mb-2 text-[11px] font-bold uppercase tracking-[0.12em] text-red md:text-[10px]">
               {story.category}
             </div>
-            <div className="mb-1.5 font-[family-name:var(--font-bask)] text-[18px] font-bold leading-[1.3] text-black transition-colors group-hover:text-red md:mb-1 md:text-[14px]">
+            <div className="font-[family-name:var(--font-bask)] text-[19px] font-bold leading-[1.35] text-black transition-colors group-hover:text-red md:text-[17px]">
               {story.title}
-            </div>
-            <div className="text-[11px] font-medium text-pale md:text-[10px]">
-              By {story.author}
             </div>
           </Link>
         ))}
