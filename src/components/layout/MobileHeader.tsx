@@ -22,21 +22,17 @@ export function MobileHeader() {
 
   return (
     <div className="border-b border-border">
-      <div className="flex h-14 items-center justify-between px-4">
+      <div className="flex h-14 items-center justify-between px-5">
         <button
           type="button"
-          onClick={() => setOpen((v) => !v)}
-          className="flex h-11 w-11 items-center justify-center -ml-2"
+          onClick={() => setOpen(true)}
+          className="-ml-2 flex h-11 w-11 items-center justify-center"
           aria-expanded={open}
           aria-controls="mobile-drawer"
-          aria-label={open ? "Close menu" : "Open menu"}
+          aria-label="Open menu"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            {open ? (
-              <path d="M18 6L6 18M6 6l12 12" />
-            ) : (
-              <path d="M3 12h18M3 6h18M3 18h18" />
-            )}
+            <path d="M3 12h18M3 6h18M3 18h18" />
           </svg>
         </button>
 
@@ -49,7 +45,7 @@ export function MobileHeader() {
 
         <Link
           href="/search"
-          className="flex h-11 w-11 items-center justify-center -mr-2"
+          className="-mr-2 flex h-11 w-11 items-center justify-center"
           aria-label="Search"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -60,30 +56,75 @@ export function MobileHeader() {
       </div>
 
       {open && (
-        <nav
+        <div
           id="mobile-drawer"
-          className="border-t border-border2 bg-white px-4 pb-4"
-          aria-label="Mobile"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu"
+          className="fixed inset-0 z-50 overflow-y-auto bg-cream"
         >
-          {NAV_ITEMS.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex min-h-[48px] items-center border-b border-border2 text-[15px] font-bold uppercase tracking-[0.08em] last:border-0",
-                isActive(item.href) ? "text-red" : "text-ink"
-              )}
+          <div className="flex h-14 items-center justify-between px-5">
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="-ml-2 flex h-11 w-11 items-center justify-center"
+              aria-label="Close menu"
             >
-              {item.label}
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+            <Link
+              href="/#newsletter"
+              className="bg-black px-5 py-2.5 text-[12px] font-bold uppercase tracking-wider text-white"
+            >
+              Subscribe
             </Link>
-          ))}
-          <Link
-            href="/contact"
-            className="flex min-h-[48px] items-center text-[15px] font-bold uppercase tracking-[0.08em] text-mid"
-          >
-            Contact / Tips
-          </Link>
-        </nav>
+          </div>
+
+          <div className="px-6 pb-12 pt-4">
+            <form action="/search" method="get" className="mb-8 flex items-center gap-3 border-b border-black pb-4">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                <circle cx="11" cy="11" r="7" />
+                <path d="M21 21l-4.3-4.3" />
+              </svg>
+              <input
+                type="search"
+                name="q"
+                placeholder="Search"
+                aria-label="Search"
+                className="min-w-0 flex-1 bg-transparent text-[17px] text-ink outline-none placeholder:text-mid"
+              />
+            </form>
+
+            <nav aria-label="Mobile">
+              {NAV_ITEMS.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "block py-4 text-[16px] font-bold uppercase tracking-[0.08em]",
+                    isActive(item.href) ? "text-red" : "text-ink"
+                  )}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+
+            <div className="mt-6 border-t border-black pt-6">
+              <Link href="/contact" className="block py-3 text-[14px] font-semibold uppercase tracking-[0.08em] text-gray">
+                Contact / Tips
+              </Link>
+              <Link href="/about" className="block py-3 text-[14px] font-semibold uppercase tracking-[0.08em] text-gray">
+                About Us
+              </Link>
+              <Link href="/#newsletter" className="block py-3 text-[14px] font-semibold uppercase tracking-[0.08em] text-gray">
+                Newsletter
+              </Link>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
