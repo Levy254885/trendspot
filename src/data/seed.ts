@@ -1,4 +1,3 @@
-
 import type { Article, Author, Category } from "@/types";
 
 const img = (s: string, w = 1200, h = 675) =>
@@ -31,6 +30,11 @@ export const seedCategories: Category[] = [
   { id: "c8", name: "Movies", slug: "movies", order: 8, createdAt: "2025-01-01T00:00:00Z", updatedAt: "2025-01-01T00:00:00Z" },
   { id: "c9", name: "Awards", slug: "awards", order: 9, createdAt: "2025-01-01T00:00:00Z", updatedAt: "2025-01-01T00:00:00Z" },
   { id: "c10", name: "Royals", slug: "royals", order: 10, createdAt: "2025-01-01T00:00:00Z", updatedAt: "2025-01-01T00:00:00Z" },
+  { id: "c11", name: "Business", slug: "business", order: 11, createdAt: "2025-01-01T00:00:00Z", updatedAt: "2025-01-01T00:00:00Z" },
+  { id: "c12", name: "Lists", slug: "lists", order: 12, createdAt: "2025-01-01T00:00:00Z", updatedAt: "2025-01-01T00:00:00Z" },
+  { id: "c13", name: "Video", slug: "video", order: 13, createdAt: "2025-01-01T00:00:00Z", updatedAt: "2025-01-01T00:00:00Z" },
+  { id: "c14", name: "Charts", slug: "charts", order: 14, createdAt: "2025-01-01T00:00:00Z", updatedAt: "2025-01-01T00:00:00Z" },
+  { id: "c15", name: "Beauty", slug: "beauty", order: 15, createdAt: "2025-01-01T00:00:00Z", updatedAt: "2025-01-01T00:00:00Z" },
 ];
 
 function art(
