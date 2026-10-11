@@ -16,7 +16,8 @@ export default async function HomePage() {
   return (
     <>
       <SiteHeader breaking={data.breaking} />
-      <main className="mx-auto max-w-[1180px] px-5 pt-10 md:px-6 md:pt-14">
+
+      <div className="page">
         {data.featured && (
           <TopStory featured={data.featured} sideStories={data.sideStories} />
         )}
@@ -26,14 +27,15 @@ export default async function HomePage() {
           celebrities={data.celebrities}
         />
         <NewsRail latest={data.latest} mostRead={data.mostRead} />
-      </main>
+      </div>
 
       <AwardsBand stories={data.awards} />
 
-      <div className="mx-auto max-w-[1180px] px-5 pt-14 md:px-6 md:pt-16">
+      <div className="page">
         <Newsletter />
         <MoreStories stories={data.more} />
       </div>
+
       <Footer />
     </>
   );
