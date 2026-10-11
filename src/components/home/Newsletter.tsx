@@ -2,6 +2,9 @@
 
 import { useState, FormEvent } from "react";
 
+const DEFAULT_SUB =
+  "Celebrity news, fashion drops, and viral moments — delivered every morning.";
+
 export function Newsletter() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "ok" | "err">("idle");
@@ -29,47 +32,35 @@ export function Newsletter() {
     }
   }
 
+  const subClass = status === "ok" ? "nl-sub ok" : status === "err" ? "nl-sub err" : "nl-sub";
+
   return (
-    <section
-      id="newsletter"
-      className="mb-16 bg-cream px-6 py-10 md:mb-20 md:flex md:items-center md:justify-between md:gap-10 md:px-12 md:py-12"
-    >
-      <div className="mb-6 md:mb-0">
-        <div className="mb-2 text-[10px] font-extrabold uppercase tracking-[0.16em] text-red">
-          Daily Newsletter
-        </div>
-        <div className="mb-2 font-[family-name:var(--font-bask)] text-[22px] font-bold text-black md:text-[20px]">
-          Get TrendSpot.co.ke in Your Inbox
-        </div>
-        <div className="font-[family-name:var(--font-serif)] text-[15px] text-gray md:text-[14px]">
-          Celebrity news, fashion drops, and viral moments — every morning.
+    <div className="nl-strip" id="newsletter">
+      <div className="nl-left">
+        <div className="nl-eyebrow">Daily Newsletter</div>
+        <div className="nl-title">Get TrendSpot.co.ke in Your Inbox</div>
+        {/* Success / error feedback replaces the sub-line so the strip never changes height. */}
+        <div className={subClass}>
+          {status === "ok" || status === "err" ? message : DEFAULT_SUB}
         </div>
       </div>
-      <form onSubmit={onSubmit} className="flex w-full flex-col gap-2 md:w-auto">
-        <div className="flex w-full">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              if (status !== "idle") setStatus("idle");
-            }}
-            placeholder="Enter your email"
-            className="min-w-0 flex-1 border border-border border-r-0 bg-white px-4 py-3 text-[15px] text-ink outline-none focus:border-ink md:w-[220px] md:flex-none md:py-2.5 md:text-[13px]"
-            required
-            disabled={status === "loading"}
-          />
-          <button
-            type="submit"
-            disabled={status === "loading"}
-            className="shrink-0 border border-black bg-black px-5 py-3 text-[12px] font-bold uppercase tracking-wider text-white hover:border-red hover:bg-red disabled:opacity-60 md:py-2.5"
-          >
-            {status === "loading" ? "..." : "Sign Up"}
-          </button>
-        </div>
-        {status === "ok" && <p className="text-[13px] text-green-700">{message}</p>}
-        {status === "err" && <p className="text-[13px] text-red">{message}</p>}
+      <form className="nl-form" onSubmit={onSubmit}>
+        <input
+          className="nl-input"
+          type="email"
+          placeholder="Enter your email address"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (status !== "idle") setStatus("idle");
+          }}
+          required
+          disabled={status === "loading"}
+        />
+        <button className="nl-btn" type="submit" disabled={status === "loading"}>
+          Sign Up
+        </button>
       </form>
-    </section>
+    </div>
   );
 }
