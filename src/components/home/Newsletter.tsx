@@ -32,16 +32,16 @@ export function Newsletter() {
   return (
     <section
       id="newsletter"
-      className="mb-10 border border-border bg-surface px-4 py-7 sm:px-6 md:mb-8 md:flex md:items-center md:justify-between md:gap-7 md:px-7 md:py-6"
+      className="mb-16 bg-cream px-6 py-10 md:mb-20 md:flex md:items-center md:justify-between md:gap-10 md:px-12 md:py-12"
     >
-      <div className="mb-5 md:mb-0">
-        <div className="mb-1.5 text-[10px] font-extrabold uppercase tracking-[0.16em] text-red">
+      <div className="mb-6 md:mb-0">
+        <div className="mb-2 text-[10px] font-extrabold uppercase tracking-[0.16em] text-red">
           Daily Newsletter
         </div>
-        <div className="mb-1 font-[family-name:var(--font-bask)] text-[20px] font-bold text-black md:text-[18px]">
+        <div className="mb-2 font-[family-name:var(--font-bask)] text-[22px] font-bold text-black md:text-[20px]">
           Get TrendSpot.co.ke in Your Inbox
         </div>
-        <div className="font-[family-name:var(--font-serif)] text-[15px] text-gray md:text-[13px]">
+        <div className="font-[family-name:var(--font-serif)] text-[15px] text-gray md:text-[14px]">
           Celebrity news, fashion drops, and viral moments — every morning.
         </div>
       </div>
