@@ -1,99 +1,133 @@
 "use client";
 
-import { useState, FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { friendlyAuthError, useAdmin } from "@/components/admin/AuthProvider";
+import { Button, Field, inputClass } from "@/components/admin/ui";
 
 export default function AdminLoginPage() {
   const router = useRouter();
+  const { configured, loading, user, me, accessError, signIn, signOut } = useAdmin();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (me) router.replace("/admin");
+  }, [me, router]);
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setError("");
-    setLoading(true);
+    setBusy(true);
     try {
-      const { getFirebaseAuth, isFirebaseEnabled } = await import(
-        "@/lib/firebase/client"
-      );
-      if (!isFirebaseEnabled()) {
-        setError(
-          "Firebase is not configured. Set NEXT_PUBLIC_USE_FIREBASE=true and Firebase env vars. For local demo, visit /admin directly."
-        );
-        setLoading(false);
-        return;
-      }
-      const auth = getFirebaseAuth();
-      if (!auth) {
-        setError("Auth unavailable.");
-        setLoading(false);
-        return;
-      }
-      const { signInWithEmailAndPassword } = await import("firebase/auth");
-      await signInWithEmailAndPassword(auth, email, password);
-      router.push("/admin");
-      router.refresh();
+      await signIn(email.trim(), password);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Sign-in failed. Check credentials."
-      );
+      setError(friendlyAuthError(err));
     } finally {
-      setLoading(false);
+      setBusy(false);
     }
   }
 
   return (
-    <div className="mx-auto max-w-md">
-      <h1 className="mb-1 font-[family-name:var(--font-bask)] text-2xl font-bold">
-        Admin sign in
-      </h1>
-      <p className="mb-6 text-sm text-mid">
-        Editors and admins only.{" "}
-        <Link href="/" className="text-red hover:underline">
-          Back to site
-        </Link>
-      </p>
-      <form onSubmit={onSubmit} className="border border-border bg-white p-6">
-        <label className="mb-4 block">
-          <span className="mb-1 block text-[10px] font-extrabold uppercase tracking-widest text-mid">
-            Email
-          </span>
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full border border-border px-3 py-2.5 text-sm outline-none focus:border-ink"
-            autoComplete="email"
-          />
-        </label>
-        <label className="mb-4 block">
-          <span className="mb-1 block text-[10px] font-extrabold uppercase tracking-widest text-mid">
-            Password
-          </span>
-          <input
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full border border-border px-3 py-2.5 text-sm outline-none focus:border-ink"
-            autoComplete="current-password"
-          />
-        </label>
-        {error && (
-          <p className="mb-4 text-sm text-red" role="alert">{error}</p>
-        )}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-black px-4 py-3 text-xs font-bold uppercase tracking-wider text-white transition-colors hover:bg-red disabled:opacity-60"
-        >
-          {loading ? "Signing in…" : "Sign in"}
-        </button>
-      </form>
+    <div className="grid min-h-screen lg:grid-cols-[1fr_1fr]">
+      {/* Brand panel */}
+      <div className="relative hidden flex-col justify-between bg-black p-12 text-white lg:flex">
+        <div>
+          <div className="font-[family-name:var(--font-bask)] text-[34px] font-bold leading-none">
+            TrendSpot<span className="ml-0.5 align-super text-[15px] font-semibold text-red">.co.ke</span>
+          </div>
+          <div className="mt-3 text-[11px] font-bold uppercase tracking-[0.24em] text-white/40">
+            Content management
+          </div>
+        </div>
+        <div>
+          <p className="max-w-md font-[family-name:var(--font-bask)] text-[26px] font-bold leading-snug">
+            Write it. Publish it. Watch it travel.
+          </p>
+          <p className="mt-4 max-w-md text-[14px] leading-relaxed text-white/55">
+            Manage stories, adverts and media — and see exactly how every article
+            performs.
+          </p>
+        </div>
+        <div className="h-[3px] w-24 bg-red" />
+      </div>
+
+      {/* Form */}
+      <div className="flex items-center justify-center bg-[#f5f5f3] px-6 py-12">
+        <div className="w-full max-w-sm">
+          <div className="mb-8 lg:hidden">
+            <div className="font-[family-name:var(--font-bask)] text-[28px] font-bold leading-none">
+              TrendSpot<span className="ml-0.5 align-super text-[12px] font-semibold text-red">.co.ke</span>
+            </div>
+          </div>
+          <h1 className="font-[family-name:var(--font-bask)] text-[26px] font-bold">Sign in</h1>
+          <p className="mb-7 mt-1.5 text-[13.5px] text-mid">
+            Team members only.{" "}
+            <Link href="/" className="font-semibold text-red hover:underline">
+              Back to the site
+            </Link>
+          </p>
+
+          {!configured && (
+            <div role="alert" className="mb-5 rounded-md border border-[#f3c4c4] bg-[#fff5f5] px-4 py-3 text-[13.5px] text-red">
+              Firebase isn&apos;t configured. Add the <code>NEXT_PUBLIC_FIREBASE_*</code> environment
+              variables and redeploy.
+            </div>
+          )}
+
+          {user && !me && !loading && (
+            <div role="alert" className="mb-5 rounded-md border border-[#f3c4c4] bg-[#fff5f5] px-4 py-3 text-[13.5px] text-red">
+              {accessError || "This account doesn't have admin access."}
+              <button
+                type="button"
+                onClick={() => void signOut()}
+                className="mt-2 block font-semibold underline"
+              >
+                Use a different account
+              </button>
+            </div>
+          )}
+
+          <form onSubmit={onSubmit} className="space-y-4 rounded-xl border border-border2 bg-white p-6 shadow-sm">
+            <Field label="Email">
+              <input
+                type="email"
+                required
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className={inputClass}
+              />
+            </Field>
+            <Field label="Password">
+              <input
+                type="password"
+                required
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={inputClass}
+              />
+            </Field>
+            {error && (
+              <p role="alert" className="text-[13px] text-red">
+                {error}
+              </p>
+            )}
+            <Button
+              type="submit"
+              variant="primary"
+              disabled={busy || !configured}
+              className="w-full"
+            >
+              {busy ? "Signing in…" : "Sign in"}
+            </Button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }

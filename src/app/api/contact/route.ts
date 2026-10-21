@@ -1,12 +1,15 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { getDb } from "@/lib/firebase/admin";
 
-export async function POST(req: NextRequest) {
+export const dynamic = "force-dynamic";
+
+export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const name = String(body.name || "").trim();
-    const email = String(body.email || "").trim();
-    const subject = String(body.subject || "").trim();
-    const message = String(body.message || "").trim();
+    const name = String(body.name || "").trim().slice(0, 120);
+    const email = String(body.email || "").trim().slice(0, 200);
+    const subject = String(body.subject || "").trim().slice(0, 200);
+    const message = String(body.message || "").trim().slice(0, 5000);
 
     if (!name || !email || !subject || !message) {
       return NextResponse.json({ error: "All fields are required." }, { status: 400 });
@@ -18,9 +21,20 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Message is too short." }, { status: 400 });
     }
 
-    // TODO: store in Firestore contactMessages
+    const db = getDb();
+    if (db) {
+      await db.collection("contactMessages").add({
+        name,
+        email,
+        subject,
+        message,
+        read: false,
+        createdAt: new Date().toISOString(),
+      });
+    }
     return NextResponse.json({ ok: true });
-  } catch {
+  } catch (e) {
+    console.error(e);
     return NextResponse.json({ error: "Unable to send message." }, { status: 500 });
   }
 }

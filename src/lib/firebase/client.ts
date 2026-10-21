@@ -1,9 +1,9 @@
 /**
- * Firebase client helpers.
- * Gracefully no-ops when Firebase is not configured or the package is missing.
+ * Firebase client SDK — used ONLY for sign-in (Firebase Authentication).
+ * All data access happens through the server (see src/app/api).
  */
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { getApp, getApps, initializeApp, type FirebaseApp } from "firebase/app";
+import { getAuth, type Auth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -12,64 +12,26 @@ const firebaseConfig = {
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-function isConfigured(): boolean {
+export function isClientConfigured(): boolean {
   return Boolean(
     firebaseConfig.apiKey &&
+      firebaseConfig.authDomain &&
       firebaseConfig.projectId &&
-      firebaseConfig.apiKey !== "undefined"
+      firebaseConfig.appId
   );
 }
 
-let app: any = null;
-let auth: any = null;
-let db: any = null;
+let app: FirebaseApp | null = null;
 
-export function getFirebaseApp(): any {
-  if (!isConfigured()) return null;
-  if (app) return app;
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { initializeApp, getApps, getApp } = require("firebase/app");
-    app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-    return app;
-  } catch {
-    return null;
-  }
+export function getClientApp(): FirebaseApp | null {
+  if (!isClientConfigured()) return null;
+  if (!app) app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+  return app;
 }
 
-export function getFirebaseAuth(): any {
-  const a = getFirebaseApp();
-  if (!a) return null;
-  if (!auth) {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { getAuth } = require("firebase/auth");
-      auth = getAuth(a);
-    } catch {
-      return null;
-    }
-  }
-  return auth;
-}
-
-export function getFirebaseDb(): any {
-  const a = getFirebaseApp();
-  if (!a) return null;
-  if (!db) {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { getFirestore } = require("firebase/firestore");
-      db = getFirestore(a);
-    } catch {
-      return null;
-    }
-  }
-  return db;
-}
-
-export function isFirebaseEnabled(): boolean {
-  return process.env.NEXT_PUBLIC_USE_FIREBASE === "true" && isConfigured();
+export function getClientAuth(): Auth | null {
+  const a = getClientApp();
+  return a ? getAuth(a) : null;
 }

@@ -12,7 +12,14 @@ import {
   fetchLatest,
 } from "@/services/articles";
 import { formatDate, formatViews, absoluteUrl } from "@/lib/utils";
+import { ViewTracker } from "@/components/article/ViewTracker";
+import { AdSlot } from "@/components/ads/AdSlot";
+import { AdBanner } from "@/components/ads/AdBanner";
+import { fetchAdvert } from "@/services/adverts";
+import { EXTRA_FONTS_URL } from "@/lib/editor-fonts";
 import { ShareButtons } from "@/components/article/ShareButtons";
+
+export const revalidate = 60;
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -40,12 +47,23 @@ export default async function ArticlePage({ params }: Props) {
   const article = await fetchArticleBySlug(slug);
   if (!article) notFound();
 
-  const [related, mostRead, latest, breaking] = await Promise.all([
+  const [related, mostRead, latest, breaking, inAd] = await Promise.all([
     fetchRelated(article),
     fetchMostRead(5),
     fetchLatest(5),
     fetchBreakingArticles(),
+    fetchAdvert("in-article"),
   ]);
+
+  // Place the in-article advert after the second paragraph.
+  let bodyHtml = article.body;
+  const marker = "<!--ts-ad-->";
+  if (inAd) {
+    let n = 0;
+    bodyHtml = bodyHtml.replace(/<\/p>/gi, (m) => (++n === 2 ? m + marker : m));
+    if (!bodyHtml.includes(marker)) bodyHtml += marker;
+  }
+  const [bodyBefore, bodyAfter] = bodyHtml.split(marker);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -67,6 +85,8 @@ export default async function ArticlePage({ params }: Props) {
   return (
     <>
       <SiteHeader breaking={breaking} />
+      <link rel="stylesheet" href={EXTRA_FONTS_URL} />
+      <ViewTracker articleId={article.id} />
       <main className="mx-auto max-w-[1180px] px-4 py-6 sm:px-6">
         <script
           type="application/ld+json"
@@ -102,7 +122,9 @@ export default async function ArticlePage({ params }: Props) {
               className="mb-6"
               sizes="(max-width: 1024px) 100vw, 800px"
             />
-            <div className="article-prose" dangerouslySetInnerHTML={{ __html: article.body }} />
+            <div className="article-prose" dangerouslySetInnerHTML={{ __html: bodyBefore }} />
+            {inAd && <AdBanner ad={inAd} className="ad-inline" />}
+            {bodyAfter && <div className="article-prose" dangerouslySetInnerHTML={{ __html: bodyAfter }} />}
             {article.tags.length > 0 && (
               <div className="mt-8 flex flex-wrap gap-2 border-t border-border2 pt-5">
                 {article.tags.map((tag) => (
@@ -141,6 +163,7 @@ export default async function ArticlePage({ params }: Props) {
             )}
           </article>
           <aside className="space-y-8">
+            <AdSlot placement="sidebar" />
             <div>
               <span className="mb-0 block border-b-2 border-black pb-2.5 text-[10px] font-extrabold uppercase tracking-[0.18em] text-mid">Most Read</span>
               {mostRead.map((s, i) => (

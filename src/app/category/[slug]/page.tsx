@@ -10,7 +10,10 @@ import {
   fetchBreakingArticles,
   fetchMostRead,
 } from "@/services/articles";
+import { AdSlot } from "@/components/ads/AdSlot";
 import { formatRelative } from "@/lib/utils";
+
+export const revalidate = 60;
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -105,6 +108,7 @@ export default async function CategoryPage({ params }: Props) {
           </div>
 
           <aside>
+            <AdSlot placement="sidebar" className="mb-6" />
             <span className="mb-0 block border-b-2 border-black pb-2.5 text-[10px] font-extrabold uppercase tracking-[0.18em] text-mid">
               Most Read
             </span>

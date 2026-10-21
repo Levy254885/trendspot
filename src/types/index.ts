@@ -126,3 +126,52 @@ export type NavItem = {
   href: string;
   children?: NavItem[];
 };
+
+export type Role = "admin" | "editor" | "author";
+
+export type AdPlacement = "home-top" | "home-mid" | "sidebar" | "in-article";
+
+export interface Advert {
+  id: string;
+  name: string;
+  placement: AdPlacement;
+  imageUrl: string;
+  imagePublicId?: string;
+  linkUrl: string;
+  alt: string;
+  startDate: string | null; // YYYY-MM-DD
+  endDate: string | null; // YYYY-MM-DD
+  active: boolean;
+  impressions: number;
+  clicks: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** What the public site needs to render an advert. */
+export interface PublicAd {
+  id: string;
+  imageUrl: string;
+  alt: string;
+  hasLink: boolean;
+}
+
+export interface MediaItem {
+  id: string;
+  url: string;
+  publicId: string;
+  name: string;
+  width: number;
+  height: number;
+  bytes: number;
+  format: string;
+  uploadedBy: string;
+  createdAt: string;
+}
+
+export interface AdminSession {
+  uid: string;
+  email: string;
+  name: string;
+  role: Role;
+}

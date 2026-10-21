@@ -331,3 +331,27 @@ footer{background:var(--black);padding:40px 0 24px;}
   background: var(--color-surface);
   animation: skeleton-pulse 1.5s ease-in-out infinite;
 }
+
+/* ───────── Rich text editor (admin) ───────── */
+.rt-editor:empty::before { content: attr(data-placeholder); color: #aaa; pointer-events: none; }
+.rt-editor figure[data-selected] { outline: 2px solid #cc0000; outline-offset: 4px; }
+
+/* ───────── Article images placed between text ───────── */
+.article-prose figure, .rt-editor figure { margin: 28px auto; max-width: 100%; }
+.article-prose figure img, .rt-editor figure img { display: block; width: 100%; height: auto; }
+.article-prose figcaption, .rt-editor figcaption { margin-top: 8px; font-size: 12.5px; line-height: 1.5; color: #777; }
+.article-prose figure[data-align="center"], .rt-editor figure[data-align="center"] { max-width: 560px; }
+.article-prose figure[data-align="left"], .rt-editor figure[data-align="left"] { float: left; width: 46%; margin: 6px 24px 14px 0; }
+.article-prose figure[data-align="right"], .rt-editor figure[data-align="right"] { float: right; width: 46%; margin: 6px 0 14px 24px; }
+.article-prose::after { content: ""; display: block; clear: both; }
+@media (max-width: 640px) {
+  .article-prose figure[data-align="left"], .article-prose figure[data-align="right"],
+  .rt-editor figure[data-align="left"], .rt-editor figure[data-align="right"] { float: none; width: 100%; margin: 24px 0; }
+}
+
+/* ───────── Adverts ───────── */
+.ad-slot { margin: 0 auto 28px; text-align: center; max-width: 100%; }
+.ad-slot a { display: block; }
+.ad-slot img { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+.ad-label { display: block; margin-bottom: 6px; font-size: 9.5px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: #aaa; }
+.ad-inline { margin: 32px auto; clear: both; }

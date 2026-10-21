@@ -1,81 +1,86 @@
 /**
- * Firebase Admin (server-only).
- * Use only in Server Components, Route Handlers, or server actions.
- * Requires FIREBASE_ADMIN_* env vars. Falls back gracefully when unset.
+ * Firebase Admin SDK (server only).
+ *
+ * Credentials come from EITHER:
+ *   - FIREBASE_SERVICE_ACCOUNT_JSON  (the whole downloaded service-account JSON, one line), or
+ *   - FIREBASE_ADMIN_PROJECT_ID + FIREBASE_ADMIN_CLIENT_EMAIL + FIREBASE_ADMIN_PRIVATE_KEY
+ *
+ * Every database write and every protected read in this project goes through
+ * the Admin SDK inside a Next.js route handler, so the browser never talks to
+ * Firestore directly and Firestore security rules can stay fully locked.
  */
+import { cert, getApps, initializeApp, type App } from "firebase-admin/app";
+import { getAuth, type Auth } from "firebase-admin/auth";
+import {
+  FieldValue,
+  getFirestore,
+  type Firestore,
+} from "firebase-admin/firestore";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+type Creds = { projectId: string; clientEmail: string; privateKey: string };
 
-let adminApp: any = null;
-let adminAuth: any = null;
-let adminDb: any = null;
-
-function hasAdminCreds(): boolean {
-  return Boolean(
-    process.env.FIREBASE_ADMIN_PROJECT_ID &&
-      process.env.FIREBASE_ADMIN_CLIENT_EMAIL &&
-      process.env.FIREBASE_ADMIN_PRIVATE_KEY
-  );
+function fixKey(key: string): string {
+  return key.trim().replace(/^"|"$/g, "").replace(/\\n/g, "\n");
 }
 
-export async function getAdminApp(): Promise<any | null> {
-  if (!hasAdminCreds()) return null;
-  if (adminApp) return adminApp;
-
-  try {
-    const adminAppMod = await import("firebase-admin/app");
-    const { initializeApp, getApps, cert } = adminAppMod;
-    if (getApps().length) {
-      adminApp = getApps()[0]!;
-      return adminApp;
+function readCreds(): Creds | null {
+  const json = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
+  if (json) {
+    try {
+      const p = JSON.parse(json) as Record<string, string>;
+      if (p.project_id && p.client_email && p.private_key) {
+        return {
+          projectId: p.project_id,
+          clientEmail: p.client_email,
+          privateKey: fixKey(p.private_key),
+        };
+      }
+    } catch {
+      /* fall through to the split variables */
     }
+  }
 
-    const privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY!.replace(
-      /\\n/g,
-      "\n"
-    );
+  const projectId =
+    process.env.FIREBASE_ADMIN_PROJECT_ID ||
+    process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+  const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL;
+  const privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY;
+  if (projectId && clientEmail && privateKey) {
+    return { projectId, clientEmail, privateKey: fixKey(privateKey) };
+  }
+  return null;
+}
 
-    adminApp = initializeApp({
-      credential: cert({
-        projectId: process.env.FIREBASE_ADMIN_PROJECT_ID!,
-        clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL!,
-        privateKey,
-      }),
-    });
-    return adminApp;
-  } catch {
+export function isAdminConfigured(): boolean {
+  return readCreds() !== null;
+}
+
+let app: App | null = null;
+
+export function getAdminApp(): App | null {
+  if (app) return app;
+  const creds = readCreds();
+  if (!creds) return null;
+  try {
+    const existing = getApps();
+    app = existing.length
+      ? existing[0]
+      : initializeApp({ credential: cert(creds) });
+    return app;
+  } catch (err) {
+    console.error("Firebase Admin failed to initialise:", err);
     return null;
   }
 }
 
-export async function getAdminAuth(): Promise<any | null> {
-  const app = await getAdminApp();
-  if (!app) return null;
-  if (!adminAuth) {
-    try {
-      const { getAuth } = await import("firebase-admin/auth");
-      adminAuth = getAuth(app);
-    } catch {
-      return null;
-    }
-  }
-  return adminAuth;
+export function getDb(): Firestore | null {
+  const a = getAdminApp();
+  return a ? getFirestore(a) : null;
 }
 
-export async function getAdminDb(): Promise<any | null> {
-  const app = await getAdminApp();
-  if (!app) return null;
-  if (!adminDb) {
-    try {
-      const { getFirestore } = await import("firebase-admin/firestore");
-      adminDb = getFirestore(app);
-    } catch {
-      return null;
-    }
-  }
-  return adminDb;
+export function getAdminAuth(): Auth | null {
+  const a = getAdminApp();
+  return a ? getAuth(a) : null;
 }
 
-export function isAdminConfigured(): boolean {
-  return hasAdminCreds();
-}
+export { FieldValue };

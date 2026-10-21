@@ -1,48 +1,93 @@
+/**
+ * Public data layer.
+ *
+ * - When Firebase Admin credentials are configured, content comes from Firestore.
+ * - Otherwise the site runs on the sample content in src/data/seed.ts.
+ */
+import { getDb, isAdminConfigured } from "@/lib/firebase/admin";
+import { cached } from "@/lib/server-cache";
+import { toArticle } from "@/lib/db/articles";
 import {
-  getPublishedArticles,
-  getArticleBySlug,
-  getArticlesByCategory,
-  getFeaturedArticle,
-  getBreakingArticles,
-  getMostRead,
-  getLatest,
-  searchArticles,
+  getPublishedArticles as seedPublished,
   seedCategories,
 } from "@/data/seed";
 import type { Article, Category } from "@/types";
 
+const byDateDesc = (a: Article, b: Article) =>
+  new Date(b.publishedAt || 0).getTime() - new Date(a.publishedAt || 0).getTime();
+
+/** All live articles (published, and whose publish time has arrived), newest first. */
+async function allPublished(): Promise<Article[]> {
+  if (!isAdminConfigured()) return seedPublished();
+
+  return cached("published-articles", 30_000, async () => {
+    try {
+      const db = getDb();
+      if (!db) return [];
+      const snap = await db
+        .collection("articles")
+        .where("status", "==", "published")
+        .limit(1000)
+        .get();
+      const now = Date.now();
+      return snap.docs
+        .map((d) => toArticle(d.id, d.data()))
+        .filter((a) => a.publishedAt && new Date(a.publishedAt).getTime() <= now)
+        .sort(byDateDesc);
+    } catch (err) {
+      console.error("Could not load articles from Firestore:", err);
+      return [];
+    }
+  });
+}
+
 export async function fetchPublishedArticles(): Promise<Article[]> {
-  return getPublishedArticles();
+  return allPublished();
 }
 
 export async function fetchArticleBySlug(slug: string): Promise<Article | null> {
-  return getArticleBySlug(slug) ?? null;
+  const all = await allPublished();
+  return all.find((a) => a.slug === slug) ?? null;
 }
 
 export async function fetchArticlesByCategory(
   categorySlug: string
 ): Promise<Article[]> {
-  return getArticlesByCategory(categorySlug);
+  const all = await allPublished();
+  return all.filter((a) => a.categorySlug === categorySlug);
 }
 
 export async function fetchFeaturedArticle(): Promise<Article | null> {
-  return getFeaturedArticle() ?? null;
+  const all = await allPublished();
+  return all.find((a) => a.featured) ?? all[0] ?? null;
 }
 
 export async function fetchBreakingArticles(): Promise<Article[]> {
-  return getBreakingArticles();
+  const all = await allPublished();
+  return all.filter((a) => a.breaking || a.trending).slice(0, 10);
 }
 
 export async function fetchMostRead(limit = 5): Promise<Article[]> {
-  return getMostRead(limit);
+  const all = await allPublished();
+  return [...all].sort((a, b) => b.views - a.views).slice(0, limit);
 }
 
 export async function fetchLatest(limit = 10): Promise<Article[]> {
-  return getLatest(limit);
+  const all = await allPublished();
+  return all.slice(0, limit);
 }
 
 export async function fetchSearch(query: string): Promise<Article[]> {
-  return searchArticles(query);
+  const q = query.toLowerCase().trim();
+  if (!q) return [];
+  const all = await allPublished();
+  return all.filter(
+    (a) =>
+      a.title.toLowerCase().includes(q) ||
+      a.excerpt.toLowerCase().includes(q) ||
+      a.category.toLowerCase().includes(q) ||
+      a.tags.some((t) => t.toLowerCase().includes(q))
+  );
 }
 
 export async function fetchCategories(): Promise<Category[]> {
@@ -59,7 +104,8 @@ export async function fetchRelated(
   article: Article,
   limit = 4
 ): Promise<Article[]> {
-  return getPublishedArticles()
+  const all = await allPublished();
+  return all
     .filter(
       (a) =>
         a.id !== article.id &&
@@ -78,9 +124,7 @@ export async function fetchHomeData() {
   ]);
 
   // Top story: 4 side stories next to the cover story.
-  const sideStories = all
-    .filter((a) => a.id !== featured?.id)
-    .slice(0, 4);
+  const sideStories = all.filter((a) => a.id !== featured?.id).slice(0, 4);
 
   // Latest News: 4 rows that aren't already showing in the top story block.
   const topIds = new Set([featured?.id, ...sideStories.map((a) => a.id)]);
@@ -92,6 +136,7 @@ export async function fetchHomeData() {
   const fashion = inSection("fashion");
   const music = inSection("music");
   const celebrities = inSection("celebrities");
+
   const awardsRaw = all.filter((a) => a.categorySlug === "awards");
   const awards =
     awardsRaw.length >= 4
