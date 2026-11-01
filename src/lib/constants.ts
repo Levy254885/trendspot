@@ -9,6 +9,16 @@ export const SITE_TAGLINE =
 export const SITE_DESCRIPTION =
   "Kenya's premier entertainment, celebrity, fashion, music and trending news publication.";
 
+export const SITE_LOGO = "/logo.png"; // masthead, structured data
+export const SITE_FAVICON = "/favicon.png"; // square icon, 512x512 recommended
+
+export const SOCIAL_LINKS = [
+  { key: "instagram", label: "Instagram", href: "https://www.instagram.com/trendspot.co.ke" },
+  { key: "x", label: "X (Twitter)", href: "https://x.com/trendspotke" },
+  { key: "facebook", label: "Facebook", href: "https://www.facebook.com/trendspot.co.ke" },
+  { key: "tiktok", label: "TikTok", href: "https://www.tiktok.com/@trendspot.co.ke2" },
+] as const;
+
 export const CATEGORY_OPTIONS: { name: string; slug: string }[] = [
   { name: "Trending", slug: "trending" },
   { name: "Entertainment", slug: "entertainment" },
