@@ -1,5 +1,5 @@
 import type { Article } from "@/types";
-import { SITE_NAME, SITE_URL, SITE_DOMAIN } from "@/lib/constants";
+import { SITE_NAME, SITE_URL, SITE_DOMAIN, SOCIAL_LINKS } from "@/lib/constants";
 import { absoluteUrl } from "@/lib/utils";
 
 export function articleJsonLd(article: Article) {
@@ -40,7 +40,7 @@ export function organizationJsonLd() {
     name: SITE_NAME,
     url: SITE_URL,
     logo: absoluteUrl("/logo.png"),
-    sameAs: [],
+    sameAs: SOCIAL_LINKS.map((s) => s.href),
     description:
       "Kenya's premier entertainment, celebrity, fashion, music and trending news publication.",
   };
