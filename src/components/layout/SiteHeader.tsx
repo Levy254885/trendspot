@@ -3,7 +3,6 @@ import { Masthead } from "./Masthead";
 import { MainNav } from "./MainNav";
 import { Ticker } from "./Ticker";
 import { MobileMenu } from "./MobileMenu";
-import { MobileDateTime } from "./MobileDateTime";
 import type { Article } from "@/types";
 
 export function SiteHeader({ breaking }: { breaking?: Article[] }) {
@@ -12,7 +11,6 @@ export function SiteHeader({ breaking }: { breaking?: Article[] }) {
       {/* Phone-only sticky bar + slide-in menu (hidden on tablets/desktop). */}
       <MobileMenu />
       <header>
-        <MobileDateTime />
         <UtilityBar />
         <Masthead />
         <MainNav />
