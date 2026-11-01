@@ -85,7 +85,6 @@ export function MobileMenu() {
   const [open, setOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [q, setQ] = useState("");
-  const closeRef = useRef<HTMLButtonElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
   const close = () => {
@@ -106,7 +105,6 @@ export function MobileMenu() {
     };
     window.addEventListener("keydown", onKey);
     mq.addEventListener("change", onResize);
-    closeRef.current?.focus({ preventScroll: true });
     return () => {
       document.body.style.overflow = prevOverflow;
       window.removeEventListener("keydown", onKey);
@@ -133,18 +131,18 @@ export function MobileMenu() {
         <button
           ref={triggerRef}
           type="button"
-          className="mm-trigger"
-          aria-label="Open menu"
+          className={open ? "mm-trigger open" : "mm-trigger"}
+          aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           aria-controls="mobile-menu"
-          onClick={() => setOpen(true)}
+          onClick={() => (open ? close() : setOpen(true))}
         >
           <span className="mm-burger" aria-hidden="true">
             <i></i>
             <i></i>
             <i></i>
           </span>
-          <span className="mm-trigger-lbl">Menu</span>
+          <span className="mm-trigger-lbl">{open ? "Close" : "Menu"}</span>
         </button>
         <div className="mm-bar-right">
           <Link href="/search" className="mm-icon-btn" aria-label="Search">
@@ -166,25 +164,9 @@ export function MobileMenu() {
         id="mobile-menu"
         className={open ? "mm-drawer open" : "mm-drawer"}
         role="dialog"
-        aria-modal="true"
         aria-label="Site menu"
         inert={!open}
       >
-        <div className="mm-head">
-          <Link href="/" className="mm-brand" onClick={close}>
-            TrendSpot<span>.co.ke</span>
-          </Link>
-          <button
-            ref={closeRef}
-            type="button"
-            className="mm-close"
-            aria-label="Close menu"
-            onClick={close}
-          >
-            <i className="ti ti-x" aria-hidden="true"></i>
-          </button>
-        </div>
-
         <div className="mm-scroll">
           <form className="mm-search" role="search" onSubmit={onSearch}>
             <input
@@ -258,14 +240,9 @@ export function MobileMenu() {
         </div>
 
         <div className="mm-foot">
-          <Link href="/#newsletter" className="mm-cta" onClick={close}>
-            Subscribe to our newsletter
-          </Link>
-          <div className="mm-follow">
-            <span>Follow us</span>
-            <div className="mm-socials">
-              <SocialLinks className="mm-soc" size={20} />
-            </div>
+          <span>Follow us</span>
+          <div className="mm-socials">
+            <SocialLinks className="mm-soc" size={18} />
           </div>
         </div>
       </aside>
