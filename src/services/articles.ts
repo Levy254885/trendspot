@@ -30,10 +30,21 @@ async function allPublished(): Promise<Article[]> {
         .limit(1000)
         .get();
       const now = Date.now();
-      return snap.docs
+      const live = snap.docs
         .map((d) => toArticle(d.id, d.data()))
         .filter((a) => a.publishedAt && new Date(a.publishedAt).getTime() <= now)
         .sort(byDateDesc);
+
+      // Guard against accidental double-publishes: keep one story per headline
+      // (the earliest one, so the original URL stays live).
+      const seen = new Map<string, Article>();
+      for (const a of live) {
+        const key = a.title.toLowerCase().replace(/\s+/g, " ").trim();
+        const prev = seen.get(key);
+        if (!prev || byDateDesc(a, prev) > 0) seen.set(key, a);
+      }
+      const keep = new Set(Array.from(seen.values()).map((a) => a.id));
+      return live.filter((a) => keep.has(a.id));
     } catch (err) {
       console.error("Could not load articles from Firestore:", err);
       return [];
@@ -116,33 +127,39 @@ export async function fetchRelated(
 }
 
 export async function fetchHomeData() {
-  const [featured, mostRead, breaking, all] = await Promise.all([
+  const [featured, mostReadAll, breaking, all] = await Promise.all([
     fetchFeaturedArticle(),
-    fetchMostRead(5),
+    fetchMostRead(1000),
     fetchBreakingArticles(),
     fetchPublishedArticles(),
   ]);
 
-  // Top story: 4 side stories next to the cover story.
-  const sideStories = all.filter((a) => a.id !== featured?.id).slice(0, 4);
+  // Every story is placed in exactly ONE block of the page. Blocks claim
+  // stories in priority order, so nothing repeats down the homepage.
+  const used = new Set<string>();
+  if (featured) used.add(featured.id);
 
-  // Latest News: 4 rows that aren't already showing in the top story block.
-  const topIds = new Set([featured?.id, ...sideStories.map((a) => a.id)]);
-  const latest = all.filter((a) => !topIds.has(a.id)).slice(0, 4);
+  const take = (list: Article[], n: number): Article[] => {
+    const out: Article[] = [];
+    for (const a of list) {
+      if (out.length >= n) break;
+      if (used.has(a.id)) continue;
+      used.add(a.id);
+      out.push(a);
+    }
+    return out;
+  };
+  const inCategory = (slug: string) => all.filter((a) => a.categorySlug === slug);
 
-  // Editorial grid: 3 stories per column.
-  const inSection = (slug: string) =>
-    all.filter((a) => a.categorySlug === slug && a.id !== featured?.id).slice(0, 3);
-  const fashion = inSection("fashion");
-  const music = inSection("music");
-  const celebrities = inSection("celebrities");
-
-  const awardsRaw = all.filter((a) => a.categorySlug === "awards");
-  const awards =
-    awardsRaw.length >= 4
-      ? awardsRaw.slice(0, 4)
-      : all.filter((a) => a.id !== featured?.id).slice(0, 4);
-  const more = all.filter((a) => a.id !== featured?.id).slice(3, 7);
+  const sideStories = take(all, 4);
+  const fashion = take(inCategory("fashion"), 3);
+  const music = take(inCategory("music"), 3);
+  const celebrities = take(inCategory("celebrities"), 3);
+  const latest = take(all, 4);
+  const awards = take(inCategory("awards"), 4);
+  const mostRead = take(mostReadAll, 5);
+  const more = take(all, 4);
+  if (awards.length < 4) awards.push(...take(all, 4 - awards.length));
 
   return {
     featured,
