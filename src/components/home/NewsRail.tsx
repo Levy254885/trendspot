@@ -42,6 +42,7 @@ export function NewsRail({
         </div>
       </div>
 
+      {mostRead.length > 0 && (
       <div className="nr-side">
         <span className="nrs-label">Most Read</span>
         <div className="nrs-list">
@@ -56,6 +57,7 @@ export function NewsRail({
           ))}
         </div>
       </div>
+      )}
     </div>
   );
 }
