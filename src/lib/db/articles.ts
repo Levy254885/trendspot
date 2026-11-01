@@ -3,7 +3,12 @@ import type { Firestore } from "firebase-admin/firestore";
 import { ApiError, clean } from "@/lib/api";
 import { CATEGORY_OPTIONS } from "@/lib/constants";
 import { sanitizeHtml, stripTags } from "@/lib/sanitize";
-import { estimateReadingTime, slugify } from "@/lib/utils";
+import {
+  deriveSeoDescription,
+  deriveSeoTitle,
+  estimateReadingTime,
+  slugify,
+} from "@/lib/utils";
 import type { AdminSession, Article } from "@/types";
 
 export type Doc = Record<string, any>;
@@ -42,8 +47,12 @@ export function toArticle(id: string, d: Doc): Article {
     trending: Boolean(d.trending),
     views: Number(d.views) || 0,
     readingTime: Number(d.readingTime) || 1,
-    seoTitle: d.seoTitle || undefined,
-    seoDescription: d.seoDescription || undefined,
+    // Older articles may have no SEO fields: derive them from the content.
+    seoTitle: d.seoTitle || deriveSeoTitle(title) || undefined,
+    seoDescription:
+      d.seoDescription ||
+      deriveSeoDescription(String(d.body || ""), String(d.excerpt || "")) ||
+      undefined,
   };
 }
 
@@ -146,8 +155,10 @@ export function buildArticleData(
     featured: !isAuthor && Boolean(input.featured),
     breaking: !isAuthor && Boolean(input.breaking),
     trending: !isAuthor && Boolean(input.trending),
-    seoTitle: clean(input.seoTitle, 120),
-    seoDescription: clean(input.seoDescription, 300),
+    // Automatic unless an editor typed an override.
+    seoTitle: clean(input.seoTitle, 120) || deriveSeoTitle(title),
+    seoDescription:
+      clean(input.seoDescription, 300) || deriveSeoDescription(body, excerpt),
     readingTime: estimateReadingTime(body),
     updatedAt: now,
     createdAt: existing?.createdAt || now,
