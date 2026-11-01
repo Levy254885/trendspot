@@ -47,13 +47,30 @@ export default async function ArticlePage({ params }: Props) {
   const article = await fetchArticleBySlug(slug);
   if (!article) notFound();
 
-  const [related, mostRead, latest, breaking, inAd] = await Promise.all([
+  const [relatedAll, mostReadAll, latestAll, breaking, inAd] = await Promise.all([
     fetchRelated(article),
-    fetchMostRead(5),
-    fetchLatest(5),
+    fetchMostRead(30),
+    fetchLatest(30),
     fetchBreakingArticles(),
     fetchAdvert("in-article"),
   ]);
+
+  // The story being read never shows up again, and no story repeats between
+  // Related, Most Read and Latest.
+  const shown = new Set<string>([article.id]);
+  const pick = (list: typeof relatedAll, n: number) => {
+    const out: typeof relatedAll = [];
+    for (const a of list) {
+      if (out.length >= n) break;
+      if (shown.has(a.id)) continue;
+      shown.add(a.id);
+      out.push(a);
+    }
+    return out;
+  };
+  const related = pick(relatedAll, 4);
+  const mostRead = pick(mostReadAll, 5);
+  const latest = pick(latestAll, 5);
 
   // Place the in-article advert after the second paragraph.
   let bodyHtml = article.body;
@@ -69,7 +86,7 @@ export default async function ArticlePage({ params }: Props) {
     "@context": "https://schema.org",
     "@type": "NewsArticle",
     headline: article.title,
-    description: article.excerpt,
+    description: article.seoDescription || article.excerpt,
     image: [article.featuredImage.url],
     datePublished: article.publishedAt,
     dateModified: article.updatedAt,
