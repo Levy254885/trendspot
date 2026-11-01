@@ -1,5 +1,13 @@
 import type { Metadata } from "next";
-import { SITE_DESCRIPTION, SITE_DOMAIN, SITE_NAME, SITE_URL } from "@/lib/constants";
+import {
+  SITE_DESCRIPTION,
+  SITE_DOMAIN,
+  SITE_FAVICON,
+  SITE_LOGO,
+  SITE_NAME,
+  SITE_URL,
+} from "@/lib/constants";
+import { SocialFloat } from "@/components/layout/SocialFloat";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -16,11 +24,18 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     title: `${SITE_DOMAIN} | Latest Kenyan Entertainment & Trending News`,
     description: SITE_DESCRIPTION,
+    images: [{ url: SITE_LOGO }],
   },
   twitter: {
     card: "summary_large_image",
     title: SITE_DOMAIN,
     description: SITE_DESCRIPTION,
+    images: [SITE_LOGO],
+  },
+  icons: {
+    icon: [{ url: SITE_FAVICON, type: "image/png" }],
+    shortcut: SITE_FAVICON,
+    apple: SITE_FAVICON,
   },
   robots: {
     index: true,
@@ -49,7 +64,10 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <SocialFloat />
+      </body>
     </html>
   );
 }
