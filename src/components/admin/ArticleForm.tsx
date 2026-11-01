@@ -23,7 +23,7 @@ import {
 } from "@/components/admin/ui";
 import { CATEGORY_OPTIONS } from "@/lib/constants";
 import { optimizeImageUrl } from "@/lib/cloudinary";
-import { slugify } from "@/lib/utils";
+import { deriveSeoDescription, deriveSeoTitle, slugify } from "@/lib/utils";
 import type { Article } from "@/types";
 
 function toLocalInput(iso: string | null | undefined): string {
@@ -67,8 +67,15 @@ export function ArticleForm({ id }: { id?: string }) {
   const [trending, setTrending] = useState(false);
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
+  // SEO fields fill themselves from the content until an editor types an override.
+  const [seoTitleTouched, setSeoTitleTouched] = useState(false);
+  const [seoDescTouched, setSeoDescTouched] = useState(false);
+  const bodyTimer = useRef<number>(0);
+  const savingRef = useRef(false); // blocks double-clicks creating duplicate articles
   const [stats, setStats] = useState<{ views: number; readingTime: number; updatedAt: string } | null>(null);
 
+  // SEO title follows the headline until an editor types an override.
+  const seoTitleValue = seoTitleTouched ? seoTitle : deriveSeoTitle(title);
   const isAuthor = me?.role === "author";
   const touch = () => {
     dirty.current = true;
@@ -107,6 +114,11 @@ export function ArticleForm({ id }: { id?: string }) {
         setTrending(a.trending);
         setSeoTitle(a.seoTitle || "");
         setSeoDescription(a.seoDescription || "");
+        setSeoTitleTouched(Boolean(a.seoTitle) && a.seoTitle !== deriveSeoTitle(a.title));
+        setSeoDescTouched(
+          Boolean(a.seoDescription) &&
+            a.seoDescription !== deriveSeoDescription(a.body, a.excerpt)
+        );
         setStats({ views: a.views, readingTime: a.readingTime, updatedAt: a.updatedAt });
         bodyRef.current = a.body;
         setInitialBody(a.body);
@@ -121,6 +133,17 @@ export function ArticleForm({ id }: { id?: string }) {
       alive = false;
     };
   }, [id, api]);
+
+  /* ── SEO description: pulled from the article text ── */
+  const refreshSeoDescription = useCallback(() => {
+    if (seoDescTouched) return;
+    setSeoDescription(deriveSeoDescription(bodyRef.current, excerpt));
+  }, [seoDescTouched, excerpt]);
+
+  useEffect(() => {
+    const t = setTimeout(refreshSeoDescription, 400);
+    return () => clearTimeout(t);
+  }, [refreshSeoDescription, initialBody, title]);
 
   /* ── warn before leaving with unsaved work ── */
   useEffect(() => {
@@ -161,6 +184,8 @@ export function ArticleForm({ id }: { id?: string }) {
   }
 
   async function save(nextStatus: "draft" | "published") {
+    if (savingRef.current) return;
+    savingRef.current = true;
     setSaving(true);
     try {
       const payload = {
@@ -184,7 +209,7 @@ export function ArticleForm({ id }: { id?: string }) {
         featured,
         breaking,
         trending,
-        seoTitle,
+        seoTitle: seoTitleValue,
         seoDescription,
       };
 
@@ -212,6 +237,7 @@ export function ArticleForm({ id }: { id?: string }) {
     } catch (e) {
       toast.err(e instanceof Error ? e.message : "Could not save the article.");
     } finally {
+      savingRef.current = false;
       setSaving(false);
     }
   }
@@ -330,6 +356,10 @@ export function ArticleForm({ id }: { id?: string }) {
             onChange={(html) => {
               bodyRef.current = html;
               touch();
+              if (!seoDescTouched) {
+                window.clearTimeout(bodyTimer.current);
+                bodyTimer.current = window.setTimeout(refreshSeoDescription, 500);
+              }
             }}
             onUploadImage={onUploadImage}
           />
@@ -537,12 +567,16 @@ export function ArticleForm({ id }: { id?: string }) {
                   className={inputClass}
                 />
               </Field>
-              <Field label="SEO title" hint={`${seoTitle.length}/60 — defaults to the headline`}>
+              <Field
+                label="SEO title"
+                hint={`${seoTitleValue.length}/60 — filled in automatically from the headline. Edit only to override.`}
+              >
                 <input
-                  value={seoTitle}
+                  value={seoTitleValue}
                   maxLength={120}
                   onChange={(e) => {
                     setSeoTitle(e.target.value);
+                    setSeoTitleTouched(e.target.value.trim() !== "");
                     touch();
                   }}
                   className={inputClass}
@@ -550,7 +584,7 @@ export function ArticleForm({ id }: { id?: string }) {
               </Field>
               <Field
                 label="SEO description"
-                hint={`${seoDescription.length}/160 — defaults to the summary`}
+                hint={`${seoDescription.length}/160 — pulled automatically from the article text. Edit only to override.`}
               >
                 <textarea
                   value={seoDescription}
@@ -558,6 +592,7 @@ export function ArticleForm({ id }: { id?: string }) {
                   maxLength={300}
                   onChange={(e) => {
                     setSeoDescription(e.target.value);
+                    setSeoDescTouched(e.target.value.trim() !== "");
                     touch();
                   }}
                   className={inputClass}
