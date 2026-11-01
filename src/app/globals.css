@@ -2,7 +2,7 @@
 
 /* Tailwind theme tokens (used by the inner pages: article, category, search, admin). */
 @theme inline {
-  --color-black: #000000;
+  --color-black: #123B70;
   --color-ink: #111111;
   --color-ink2: #1a1a1a;
   --color-gray: #444444;
@@ -13,8 +13,11 @@
   --color-surface: #f4f4f4;
   --color-cream: #faf5ec;
   --color-white: #ffffff;
-  --color-red: #cc0000;
-  --color-red-hover: #aa0000;
+  --color-red: #00A6C7;
+  --color-red-hover: #0088A3;
+  --color-blue: #123B70;
+  --color-cyan: #00A6C7;
+  --color-bg: #F5F8FC;
 
   --font-serif: 'Source Serif 4', 'Georgia', serif;
   --font-bask: 'Libre Baskerville', 'Georgia', serif;
@@ -25,7 +28,10 @@
 /* Reference design tokens + base — copied from trendspot_thr_style.html */
 /* ------------------------------------------------------------------ */
 :root {
-  --black: #000;
+  --black: #123B70; /* Royal Blue */
+  --blue: #123B70;
+  --cyan: #00A6C7;
+  --page-bg: #F5F8FC;
   --ink: #111;
   --ink2: #1a1a1a;
   --gray: #444;
@@ -35,7 +41,7 @@
   --border2: #e5e5e5;
   --surface: #f4f4f4;
   --white: #fff;
-  --red: #c00;
+  --red: #00A6C7; /* accent = Cyan */
   --f-serif: 'Source Serif 4', 'Georgia', serif;
   --f-bask: 'Libre Baskerville', 'Georgia', serif;
   --f-ui: 'Inter', system-ui, sans-serif;
@@ -52,7 +58,7 @@
 @layer base {
   body {
     font-family: var(--f-ui);
-    background: var(--white);
+    background: var(--page-bg);
     color: var(--ink);
     line-height: normal;
     -webkit-font-smoothing: antialiased;
@@ -212,23 +218,45 @@ a.mg-item{display:block;}
 .mg-hl{font-family:var(--f-bask);font-size:14px;font-weight:700;line-height:1.3;color:var(--black);margin-bottom:4px;}
 .mg-by{font-size:10px;font-weight:500;color:var(--pale);}
 
-/* FOOTER */
-footer{background:var(--black);padding:40px 0 24px;}
+/* FOOTER — Royal Blue + Cyan + White */
+footer{background:var(--blue);padding:44px 0 28px;border-top:4px solid var(--cyan);}
 .foot-i{max-width:1180px;margin:0 auto;padding:0 24px;}
-.foot-logo{font-family:var(--f-bask);font-size:28px;font-weight:700;color:var(--white);margin-bottom:6px;}
-.foot-logo-suffix{font-family:var(--f-ui);font-size:13px;font-weight:600;color:var(--red);vertical-align:super;position:relative;top:-4px;}
-.foot-tagline{font-size:11px;color:rgba(255,255,255,0.3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:28px;}
-.foot-rule{height:1px;background:rgba(255,255,255,0.08);margin-bottom:28px;}
+.foot-logo{font-family:var(--f-bask);font-size:30px;font-weight:700;color:var(--white);margin-bottom:6px;}
+.foot-logo-suffix{font-family:var(--f-ui);font-size:14px;font-weight:700;color:var(--cyan);vertical-align:super;position:relative;top:-4px;}
+.foot-tagline{font-size:11.5px;font-weight:600;color:rgba(255,255,255,0.78);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:28px;}
+.foot-rule{height:1px;background:rgba(255,255,255,0.18);margin-bottom:28px;}
 .foot-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:28px;margin-bottom:28px;}
-.foot-col-lbl{font-size:10px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:12px;}
-.foot-col ul{list-style:none;display:flex;flex-direction:column;gap:8px;}
-.foot-col a{font-size:12.5px;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 0.12s;}
-.foot-col a:hover{color:var(--white);}
-.foot-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:20px;display:flex;justify-content:space-between;align-items:center;}
-.foot-copy{font-size:11px;color:rgba(255,255,255,0.2);}
-.foot-socials{display:flex;gap:10px;}
-.soc{width:32px;height:32px;border:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);font-size:14px;text-decoration:none;transition:all 0.12s;}
-.soc:hover{border-color:var(--red);color:var(--white);}
+.foot-col-lbl{font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--cyan);margin-bottom:14px;}
+.foot-col ul{list-style:none;display:flex;flex-direction:column;gap:9px;}
+.foot-col a{font-size:13.5px;font-weight:600;color:var(--white);text-decoration:none;transition:color 0.12s;}
+.foot-col a:hover{color:var(--cyan);}
+.foot-bottom{border-top:1px solid rgba(255,255,255,0.18);padding-top:20px;display:flex;justify-content:space-between;align-items:center;}
+.foot-copy{font-size:12px;font-weight:600;color:rgba(255,255,255,0.85);}
+.foot-copy a{color:var(--white);text-decoration:none;}
+.foot-copy a:hover{color:var(--cyan);}
+.foot-socials{display:flex;flex-wrap:wrap;gap:12px;}
+.soc{width:46px;height:46px;border-radius:50%;border:2px solid var(--cyan);background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;color:var(--white);text-decoration:none;transition:transform 0.15s,background 0.15s,border-color 0.15s;}
+.soc:hover{background:var(--cyan);border-color:var(--white);transform:translateY(-2px);}
+
+/* FLOATING SOCIAL BUTTONS — bottom right of every public screen */
+.social-float{position:fixed;right:18px;bottom:18px;z-index:60;display:flex;flex-direction:column;gap:10px;}
+.sf-btn{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;border:2px solid #fff;box-shadow:0 6px 18px rgba(18,59,112,0.35);transition:transform 0.15s,box-shadow 0.15s;}
+.sf-btn:hover{transform:scale(1.12);box-shadow:0 8px 22px rgba(18,59,112,0.5);}
+.sf-btn:focus-visible{outline:3px solid var(--cyan);outline-offset:2px;}
+.sf-btn-instagram{background:linear-gradient(45deg,#f9a03f 0%,#e1306c 50%,#833ab4 100%);}
+.sf-btn-x{background:#000;}
+.sf-btn-facebook{background:#1877f2;}
+.sf-btn-tiktok{background:#000;}
+@media (max-width:640px){
+  .social-float{right:12px;bottom:12px;gap:8px;}
+  .sf-btn{width:44px;height:44px;}
+  .sf-btn svg{width:21px;height:21px;}
+}
+@media (prefers-reduced-motion:reduce){.sf-btn,.soc{transition:none;}.sf-btn:hover,.soc:hover{transform:none;}}
+
+/* MASTHEAD LOGO */
+.mast-logo-img{height:auto;width:auto;max-height:84px;max-width:100%;margin:0 auto;display:block;}
+@media (max-width:640px){.mast-logo-img{max-height:60px;}}
 
 /* ------------------------------------------------------------------ */
 /* Small screens. The reference file has no breakpoints, so below      */
