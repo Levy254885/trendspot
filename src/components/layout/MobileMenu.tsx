@@ -5,70 +5,76 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { SocialLinks } from "./SocialIcons";
 
-type Item = { label: string; href: string; icon: string; external?: boolean };
-type Group = { key: string; title: string; icon: string; items: Item[] };
+type Item = { label: string; href: string; external?: boolean };
+type Group = { key: string; title: string; items: Item[] };
 
-/** Everything reachable from the phone menu, grouped into dropdowns. */
+/** Top-level rows that are plain links. */
+const QUICK: Item[] = [
+  { label: "Home", href: "/" },
+  { label: "Trending", href: "/category/trending" },
+];
+
+/** Dropdown rows — every section of the site is reachable from here. */
 const GROUPS: Group[] = [
   {
     key: "entertainment",
     title: "Entertainment",
-    icon: "ti-masks-theater",
     items: [
-      { label: "Entertainment", href: "/category/entertainment", icon: "ti-masks-theater" },
-      { label: "Music", href: "/category/music", icon: "ti-music" },
-      { label: "TV", href: "/category/tv", icon: "ti-device-tv" },
-      { label: "Movies", href: "/category/movies", icon: "ti-movie" },
-      { label: "Video", href: "/category/video", icon: "ti-player-play" },
-      { label: "Charts", href: "/category/charts", icon: "ti-chart-bar" },
+      { label: "All Entertainment", href: "/category/entertainment" },
+      { label: "Music", href: "/category/music" },
+      { label: "TV", href: "/category/tv" },
+      { label: "Movies", href: "/category/movies" },
+      { label: "Video", href: "/category/video" },
+      { label: "Charts", href: "/category/charts" },
+    ],
+  },
+  {
+    key: "celebs",
+    title: "Celebrities",
+    items: [
+      { label: "All Celebrities", href: "/category/celebrities" },
+      { label: "Royals", href: "/category/royals" },
     ],
   },
   {
     key: "style",
-    title: "Celebrity & Style",
-    icon: "ti-star",
+    title: "Fashion & Lifestyle",
     items: [
-      { label: "Celebrities", href: "/category/celebrities", icon: "ti-star" },
-      { label: "Royals", href: "/category/royals", icon: "ti-crown" },
-      { label: "Fashion", href: "/category/fashion", icon: "ti-hanger" },
-      { label: "Beauty", href: "/category/beauty", icon: "ti-sparkles" },
-      { label: "Lifestyle", href: "/category/lifestyle", icon: "ti-heart" },
+      { label: "Fashion", href: "/category/fashion" },
+      { label: "Beauty", href: "/category/beauty" },
+      { label: "Lifestyle", href: "/category/lifestyle" },
     ],
   },
   {
     key: "news",
-    title: "News & Features",
-    icon: "ti-news",
+    title: "Business & Features",
     items: [
-      { label: "Trending", href: "/category/trending", icon: "ti-flame" },
-      { label: "Business", href: "/category/business", icon: "ti-briefcase" },
-      { label: "Awards", href: "/category/awards", icon: "ti-trophy" },
-      { label: "Lists", href: "/category/lists", icon: "ti-list-details" },
+      { label: "Business", href: "/category/business" },
+      { label: "Awards", href: "/category/awards" },
+      { label: "Lists", href: "/category/lists" },
     ],
   },
   {
     key: "company",
-    title: "TrendSpot",
-    icon: "ti-info-circle",
+    title: "About TrendSpot",
     items: [
-      { label: "About Us", href: "/about", icon: "ti-info-circle" },
-      { label: "Contact", href: "/contact", icon: "ti-mail" },
-      { label: "Advertise", href: "/contact", icon: "ti-speakerphone" },
-      { label: "Tip Line", href: "/contact", icon: "ti-send" },
-      { label: "Newsletter", href: "/#newsletter", icon: "ti-mailbox" },
-      { label: "RSS Feed", href: "/feed.xml", icon: "ti-rss", external: true },
+      { label: "About Us", href: "/about" },
+      { label: "Contact Us", href: "/contact" },
+      { label: "Advertise With Us", href: "/contact" },
+      { label: "Tip Line", href: "/contact" },
+      { label: "Newsletter", href: "/#newsletter" },
+      { label: "RSS Feed", href: "/feed.xml", external: true },
     ],
   },
   {
     key: "legal",
-    title: "Legal & Info",
-    icon: "ti-shield-lock",
+    title: "Legal",
     items: [
-      { label: "Privacy Policy", href: "/privacy", icon: "ti-shield-lock" },
-      { label: "Terms of Use", href: "/terms", icon: "ti-file-text" },
-      { label: "Disclaimer", href: "/disclaimer", icon: "ti-alert-triangle" },
-      { label: "Cookies", href: "/privacy", icon: "ti-cookie" },
-      { label: "Sitemap", href: "/sitemap.xml", icon: "ti-sitemap", external: true },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms of Use", href: "/terms" },
+      { label: "Disclaimer", href: "/disclaimer" },
+      { label: "Cookies", href: "/privacy" },
+      { label: "Sitemap", href: "/sitemap.xml", external: true },
     ],
   },
 ];
@@ -77,7 +83,7 @@ export function MobileMenu() {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [openGroup, setOpenGroup] = useState<string | null>("entertainment");
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [q, setQ] = useState("");
   const closeRef = useRef<HTMLButtonElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -150,14 +156,12 @@ export function MobileMenu() {
         </div>
       </div>
 
-      {/* Backdrop */}
       <div
         className={open ? "mm-overlay open" : "mm-overlay"}
         onClick={close}
         aria-hidden="true"
       />
 
-      {/* Drawer */}
       <aside
         id="mobile-menu"
         className={open ? "mm-drawer open" : "mm-drawer"}
@@ -183,93 +187,85 @@ export function MobileMenu() {
 
         <div className="mm-scroll">
           <form className="mm-search" role="search" onSubmit={onSearch}>
-            <i className="ti ti-search" aria-hidden="true"></i>
             <input
               type="search"
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search stories, stars, music…"
+              placeholder="Search TrendSpot…"
               aria-label="Search TrendSpot"
               enterKeyHint="search"
             />
-            <button type="submit">Go</button>
+            <button type="submit" aria-label="Search">
+              <i className="ti ti-search" aria-hidden="true"></i>
+            </button>
           </form>
 
-          <Link
-            href="/"
-            className={isActive("/") ? "mm-home act" : "mm-home"}
-            onClick={close}
-            style={{ ["--i" as string]: 0 }}
-          >
-            <i className="ti ti-home" aria-hidden="true"></i>
-            <span>Home · Latest News</span>
-          </Link>
-
-          <div className="mm-groups">
-            {GROUPS.map((g, gi) => {
-              const isOpen = openGroup === g.key;
-              return (
-                <div
-                  key={g.key}
-                  className={isOpen ? "mm-group open" : "mm-group"}
-                  style={{ ["--i" as string]: gi + 1 }}
-                >
-                  <button
-                    type="button"
-                    className="mm-group-btn"
-                    aria-expanded={isOpen}
-                    aria-controls={`mm-panel-${g.key}`}
-                    onClick={() => setOpenGroup(isOpen ? null : g.key)}
+          <nav aria-label="Mobile">
+            <ul className="mm-list">
+              {QUICK.map((it) => (
+                <li key={it.label}>
+                  <Link
+                    href={it.href}
+                    className={isActive(it.href) ? "mm-row act" : "mm-row"}
+                    onClick={close}
                   >
-                    <span className="mm-group-ico">
-                      <i className={`ti ${g.icon}`} aria-hidden="true"></i>
-                    </span>
-                    <span className="mm-group-title">{g.title}</span>
-                    <span className="mm-group-count">{g.items.length}</span>
-                    <i className="ti ti-chevron-down mm-chev" aria-hidden="true"></i>
-                  </button>
-                  <div className="mm-panel" id={`mm-panel-${g.key}`} inert={!isOpen}>
-                    <div className="mm-panel-in">
-                      <div className="mm-items">
-                        {g.items.map((it) =>
-                          it.external ? (
-                            <a key={it.label} href={it.href} className="mm-item" onClick={close}>
-                              <i className={`ti ${it.icon}`} aria-hidden="true"></i>
-                              {it.label}
-                            </a>
-                          ) : (
-                            <Link
-                              key={it.label}
-                              href={it.href}
-                              className={isActive(it.href) ? "mm-item act" : "mm-item"}
-                              onClick={close}
-                            >
-                              <i className={`ti ${it.icon}`} aria-hidden="true"></i>
-                              {it.label}
-                            </Link>
-                          )
-                        )}
-                      </div>
+                    <span>{it.label}</span>
+                    {it.label === "Trending" && <em className="mm-hot">Hot</em>}
+                  </Link>
+                </li>
+              ))}
+
+              {GROUPS.map((g) => {
+                const isOpen = openGroup === g.key;
+                return (
+                  <li key={g.key} className={isOpen ? "mm-grp open" : "mm-grp"}>
+                    <button
+                      type="button"
+                      className="mm-row mm-row-btn"
+                      aria-expanded={isOpen}
+                      aria-controls={`mm-sub-${g.key}`}
+                      onClick={() => setOpenGroup(isOpen ? null : g.key)}
+                    >
+                      <span>{g.title}</span>
+                      <i className="ti ti-chevron-down mm-chev" aria-hidden="true"></i>
+                    </button>
+                    <div className="mm-sub" id={`mm-sub-${g.key}`} inert={!isOpen}>
+                      <ul>
+                        {g.items.map((it) => (
+                          <li key={it.label}>
+                            {it.external ? (
+                              <a href={it.href} className="mm-subrow" onClick={close}>
+                                {it.label}
+                              </a>
+                            ) : (
+                              <Link
+                                href={it.href}
+                                className={isActive(it.href) ? "mm-subrow act" : "mm-subrow"}
+                                onClick={close}
+                              >
+                                {it.label}
+                              </Link>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+        </div>
 
+        <div className="mm-foot">
           <Link href="/#newsletter" className="mm-cta" onClick={close}>
-            <i className="ti ti-mail-fast" aria-hidden="true"></i>
-            Get the TrendSpot newsletter
+            Subscribe to our newsletter
           </Link>
-
           <div className="mm-follow">
             <span>Follow us</span>
             <div className="mm-socials">
               <SocialLinks className="mm-soc" size={20} />
             </div>
-          </div>
-          <div className="mm-copy">
-            © {new Date().getFullYear()} TrendSpot.co.ke
           </div>
         </div>
       </aside>
